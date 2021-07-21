@@ -1,0 +1,133 @@
+paths:
+  /notification/me:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - "notification"
+      summary: "Get all user notification"
+      description: "Get all user notification"
+      operationId: "allYourNotification"
+      parameters:
+        - in: query
+          name: __skip
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: __limit
+          schema:
+            type: integer
+          description: The numbers of items to return
+        - in: query
+          name: read
+          schema:
+            type: number
+      responses:
+        "200":
+          description: "successful operation"
+  /notification:
+    get:
+      tags:
+        - "notification"
+      summary: "Get all notification"
+      description: "Get all notification"
+      operationId: "allNotification"
+      parameters:
+        - in: query
+          name: __skip
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: __limit
+          schema:
+            type: integer
+          description: The numbers of items to return
+      responses:
+        "200":
+          description: "successful operation"
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - "notification"
+      summary: "Create notification"
+      description: "create new notification"
+      operationId: "createNotification"
+      requestBody:
+        description: "User object that needs to be added"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+  /notification/{notificationId}:
+    get:
+      tags:
+        - "notification"
+      summary: ""
+      description: ""
+      operationId: "getOneNotification"
+      parameters:
+        - in: path
+          name: notificationId
+          schema:
+            type: string
+          required: true
+          description: Id of notification
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - "notification"
+      summary: ""
+      description: ""
+      operationId: "updateOneNotification"
+      parameters:
+        - in: path
+          name: questionId
+          schema:
+            type: string
+          required: true
+          description: Id of question
+      requestBody:
+        description: "fill all field to login user"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                read:
+                  type: number
+                  enum:
+                    - 0
+                    - 1
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - "notification"
+      summary: ""
+      description: ""
+      operationId: "deleteOneQuestion"
+      parameters:
+        - in: path
+          name: questionId
+          schema:
+            type: string
+          required: true
+          description: Id of question
+      responses:
+        "200":
+          description: "successful operation"

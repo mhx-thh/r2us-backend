@@ -1,0 +1,112 @@
+paths:
+  /bank:
+    get:
+      tags:
+        - "bankInfo"
+      summary: "Get all bankInfo"
+      description: "Get all bankInfo"
+      operationId: "allbankInfo"
+      responses:
+        "200":
+          description: "successful operation"
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - "bankInfo"
+      summary: "Create bankInfo"
+      description: "create new bankInfo"
+      operationId: "createbankInfo"
+      requestBody:
+        description: "User object that needs to be added"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                phoneNumber:
+                  type: string
+                usernameMomo:
+                  type: string
+                accountNumberBank:
+                  type: string
+                usernameBank:
+                  type: string
+                branchBank:
+                  type: string
+                
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+  /bank/{bankInfoId}:
+    get:
+      tags:
+        - "bankInfo"
+      summary: ""
+      description: ""
+      operationId: "getOnebankInfo"
+      parameters:
+        - in: path
+          name: bankInfoId
+          schema:
+            type: string
+          required: true
+          description: Id of bankInfo
+      responses:
+        "200":
+          description: "successful operation"
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - "bankInfo"
+      summary: ""
+      description: ""
+      operationId: "updateOnebankInfo"
+      parameters:
+        - in: path
+          name: bankInfoId
+          schema:
+            type: string
+          required: true
+          description: Id of bankInfo
+      requestBody:
+        description: "fill all field to login user"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                phoneNumber:
+                  type: string
+                usernameMomo:
+                  type: string
+                accountNumberBank:
+                  type: string
+                usernameBank:
+                  type: string
+                branchBank:
+                  type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - "bankInfo"
+      summary: ""
+      description: ""
+      operationId: "deleteOneBankInfo"
+      parameters:
+        - in: path
+          name: bankInfoId
+          schema:
+            type: string
+          required: true
+          description: Id of bankInfo
+      responses:
+        "200":
+          description: "successful operation"

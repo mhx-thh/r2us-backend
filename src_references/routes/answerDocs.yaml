@@ -1,0 +1,136 @@
+paths:
+  /answer/me:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - "answer"
+      summary: "Get all user answer"
+      description: "Get all user answer"
+      operationId: "allYourAnswer"
+      parameters:
+        - in: query
+          name: __skip
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: __limit
+          schema:
+            type: integer
+          description: The numbers of items to return
+      responses:
+        "200":
+          description: "successful operation"
+  /answer:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - "answer"
+      summary: "Get all answer"
+      description: "Get all answer"
+      operationId: "allAnswer"
+      parameters:
+        - in: query
+          name: __skip
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: __limit
+          schema:
+            type: integer
+          description: The numbers of items to return
+      responses:
+        "200":
+          description: "successful operation"
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - "answer"
+      summary: "Create answer"
+      description: "create new answer"
+      operationId: "createAnswer"
+      requestBody:
+        description: "User object that needs to be added"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                answer:
+                  type: string
+                question:
+                  type: string
+                photoUrl:
+                  type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+  /answer/{answerId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - "answer"
+      summary: ""
+      description: ""
+      operationId: "getOneAnswer"
+      parameters:
+        - in: path
+          name: answerId
+          schema:
+            type: string
+          required: true
+          description: Id of question
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - "answer"
+      summary: ""
+      description: ""
+      operationId: "updateOneAnswer"
+      parameters:
+        - in: path
+          name: answerId
+          schema:
+            type: string
+          required: true
+          description: Id of answer
+      requestBody:
+        description: "fill all field to login user"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                answer:
+                  type: string
+                photoUrl:
+                  typw: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - "answer"
+      summary: ""
+      description: ""
+      operationId: "deleteOneAnswer"
+      parameters:
+        - in: path
+          name: answerId
+          schema:
+            type: string
+          required: true
+          description: Id of answer
+      responses:
+        "200":
+          description: "successful operation"

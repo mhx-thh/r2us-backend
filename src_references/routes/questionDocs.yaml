@@ -1,0 +1,291 @@
+paths:
+  /question/category:
+    get:
+      tags:
+        - "question"
+      summary: "Get all question Category"
+      description: "Get all question category"
+      operationId: "allCategory"
+      responses:
+        "200":
+          description: "successful operation"
+  /question/me:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - "question"
+      summary: "Get all user question"
+      description: "Get all user question"
+      operationId: "allYourQuestion"
+      parameters:
+        - in: query
+          name: __skip
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: __limit
+          schema:
+            type: integer
+          description: The numbers of items to return
+        - in: query
+          name: title__search
+          schema:
+            type: string
+          description: search title
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum:
+              - pending
+              - answered
+              - closed
+        - in: query
+          name: category
+          schema:
+            type: string
+          description: The numbers of items to return
+      responses:
+        "200":
+          description: "successful operation"
+  /question:
+    get:
+      tags:
+        - "question"
+      summary: "Get all category"
+      description: "Get all category"
+      operationId: "allQuestion"
+      parameters:
+        - in: query
+          name: __skip
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: __limit
+          schema:
+            type: integer
+          description: The numbers of items to return
+        - in: query
+          name: title__search
+          schema:
+            type: string
+          description: search title
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum:
+              - pending
+              - answered
+              - closed
+        - in: query
+          name: category
+          schema:
+            type: string
+          description: The numbers of items to return
+      responses:
+        "200":
+          description: "successful operation"
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - "question"
+      summary: "Create question"
+      description: "create new question"
+      operationId: "createQuestion"
+      requestBody:
+        description: "User object that needs to be added"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                coin:
+                  type: number
+                category:
+                  type: string
+                  enum:
+                    - Tổng quát
+                    - Toán học
+                    - Ngữ văn
+                    - Sinh học
+                    - Vật lý
+                    - Hóa học
+                    - Lịch sử
+                    - Địa lý
+                    - Tiếng Anh
+                    - Thể dục
+                    - Công nghệ
+                    - Tin học
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+  /question/{questionId}:
+    get:
+      tags:
+        - "question"
+      summary: ""
+      description: ""
+      operationId: "getOneQuestion"
+      parameters:
+        - in: path
+          name: questionId
+          schema:
+            type: string
+          required: true
+          description: Id of question
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - "question"
+      summary: ""
+      description: ""
+      operationId: "updateOneQuestion"
+      parameters:
+        - in: path
+          name: questionId
+          schema:
+            type: string
+          required: true
+          description: Id of question
+      requestBody:
+        description: "fill all field to login user"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                category:
+                  type: string
+                status: 
+                  type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - "question"
+      summary: ""
+      description: ""
+      operationId: "deleteOneQuestion"
+      parameters:
+        - in: path
+          name: questionId
+          schema:
+            type: string
+          required: true
+          description: Id of question
+      responses:
+        "200":
+          description: "successful operation"
+  /question/{questionId}/buy:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - "question"
+      summary: ""
+      description: ""
+      operationId: "buyOneQuestion"
+      parameters:
+        - in: path
+          name: questionId
+          schema:
+            type: string
+          required: true
+          description: Id of question
+      responses:
+        "200":
+          description: "successful operation"
+  /question/{questionId}/accept:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - "question"
+      summary: ""
+      description: ""
+      operationId: "acceptOneQuestion"
+      parameters:
+        - in: path
+          name: questionId
+          schema:
+            type: string
+          required: true
+          description: Id of question
+      responses:
+        "200":
+          description: "successful operation"
+  /question/{questionId}/reject:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - "question"
+      summary: ""
+      description: "user request reject answer"
+      operationId: "rejectOneQuestion"
+      parameters:
+        - in: path
+          name: questionId
+          schema:
+            type: string
+          required: true
+          description: Id of question
+      requestBody:
+        description: "reason"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        "200":
+          description: "successful operation"
+  /question/{questionId}/confirm-reject:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - "question"
+      summary: ""
+      description: "admin confirm reject answer of this question"
+      operationId: "confirm-rejectOneQuestion"
+      parameters:
+        - in: path
+          name: questionId
+          schema:
+            type: string
+          required: true
+          description: Id of question
+      requestBody:
+        description: "reason"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        "200":
+          description: "successful operation"

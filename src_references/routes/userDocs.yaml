@@ -1,0 +1,247 @@
+paths:
+  /user/signup:
+    post:
+      tags:
+        - "user"
+      summary: "Create user"
+      description: "Sign up new user account"
+      operationId: "createUser"
+      requestBody:
+        description: "User object that needs to be added"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                passwordConfirm:
+                  type: string
+                photo:
+                  type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+  /user/signin:
+    post:
+      tags:
+        - "user"
+      summary: "Logs user into the system"
+      description: "Sign in user"
+      operationId: "loginUser"
+      requestBody:
+        description: "fill all field to login user"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Please provide email & password"
+        "404":
+          description: "Incorect Email or Password"
+  /user/forgotPassword:
+    post:
+      tags: 
+        - "user"
+      summary: "Forgot passowrd"
+      description: "require new password if dont remember it"
+      operationId: "forgotPassword"
+      requestBody:
+        description: "fill email field to search user"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation, please!, check email"
+        "400":
+          description: "Invalid email supplied"
+  /user/me:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - "user"
+      summary: "Get info account"
+      description: "my infomation account"
+      operationId: "getMe"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+  /user/updateMe:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - "user"
+      summary: "update info account"
+      description: "update infomation account"
+      operationId: "updateMe"
+      requestBody:
+        description: "User object that you want to update"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                photo:
+                  type: string
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+  /user/updateMyPassword:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - "user"
+      summary: "update password account"
+      description: "update password account"
+      operationId: "updateMyPassword"
+      requestBody:
+        description: "enter password and confirm to change"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                passwordConfirm:
+                  type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+  /user/deleteMe:
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - "user"
+      summary: "Delete account"
+      description: "delete account"
+      operationId: "deleteMe"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+  /user/resetPassword/{token}:
+    patch:
+      tags:
+        - "user"
+      summary: "reset password account"
+      description: "reset password account"
+      operationId: "resetPassword"
+      parameters:
+        - name: token
+          in: path
+          description: token from email
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: "enter password and confirm to reset"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                passwordConfirm:
+                  type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+  /user/add-coin:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - "user"
+      summary: "admin add coin account"
+      description: "admin add coin account"
+      operationId: "addCoin"
+      requestBody:
+        description: "enter coin"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                coin:
+                  type: number
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+  /user/minus-coin:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - "user"
+      summary: "admin minus coin account"
+      description: "admin minus coin account"
+      operationId: "minusCoin"
+      requestBody:
+        description: "enter coin"
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                coin:
+                  type: number
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
