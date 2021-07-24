@@ -120,4 +120,3 @@ package-lock.json
 yarn.lock
 
 # env - Sensitive
-.env
