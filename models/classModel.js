@@ -3,7 +3,6 @@ const uniqueValidator = require('mongoose-unique-validator');
 const idValidator = require('mongoose-id-validator');
 const convVie = require('../utils/convVie');
 const reviewModel = require('./reviewModel');
-const instructorModel = require('./instructorModel');
 
 const classSchema = new mongoose.Schema({
   classId: {
@@ -33,7 +32,8 @@ const classSchema = new mongoose.Schema({
   },
 
   instructors: {
-    type: [instructorModel],
+    type: [mongoose.Schema.ObjectId],
+    ref: 'Instructor',
     minlength: 1,
     required: [true, 'A class must have at least 1 instructor'],
   },
