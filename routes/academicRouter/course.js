@@ -15,7 +15,7 @@ router
   );
 
 router
-  .route(':/id')
+  .route('/[:slug]')
   .get(courseController.getCourse)
   .patch(
     authController.restrictTo('admin'),

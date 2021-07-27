@@ -15,7 +15,7 @@ router
   );
 
 router
-  .route(':/id')
+  .route('/:id')
   .get(enrollController.getEnrollment)
   .patch(
     authController.restrictTo('admin'),
