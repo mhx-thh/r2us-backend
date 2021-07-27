@@ -4,8 +4,6 @@ const courseController = require('../../controller/courseCtrl');
 
 const router = express.Router({ mergeParams: true });
 
-router.use(authController.protect);
-
 router
   .route('/')
   .get(courseController.getAllCourses)
@@ -15,7 +13,7 @@ router
   );
 
 router
-  .route('/[:slug]')
+  .route('/:id')
   .get(courseController.getCourse)
   .patch(
     authController.restrictTo('admin'),

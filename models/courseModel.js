@@ -5,13 +5,6 @@ const idValidator = require('mongoose-id-validator');
 const convVie = require('../utils/convVie');
 
 const courseSchema = new mongoose.Schema({
-  courseId: {
-    type: String,
-    unique: true,
-    required: [true, 'A course should have a unique ID'],
-    default: '',
-  },
-
   courseName: {
     type: String,
     required: [true, 'A course should have a name'],
@@ -51,7 +44,7 @@ courseSchema.index = ({ slug: 1 });
 courseSchema.virtual('classes', {
   ref: 'Class',
   localField: '_id',
-  foreignField: 'classId',
+  foreignField: '_id',
 });
 
 courseSchema.pre('save', function (next) {

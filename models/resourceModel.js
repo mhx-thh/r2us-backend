@@ -6,13 +6,6 @@ const convVie = require('../utils/convVie');
 const AppError = require('../utils/appError');
 
 const resourceSchema = new mongoose.Schema({
-  resourceId: {
-    type: String,
-    unique: [true, 'This file must have a unique ID'],
-    required: [true, 'This file should have an ID'],
-    default: '',
-  },
-
   resourceType: {
     type: String,
     enum: ['Resources', 'Examination Paper', 'Review Paper'],

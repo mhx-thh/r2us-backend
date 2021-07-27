@@ -6,13 +6,6 @@ const convVie = require('../utils/convVie');
 const reviewModel = require('./reviewModel');
 
 const classSchema = new mongoose.Schema({
-  classId: {
-    type: String,
-    unique: [true, 'A class should have a unique ID'],
-    required: [true, 'A class should have an ID'],
-    default: '',
-  },
-
   className: {
     type: String,
     required: [true, 'A class should have a name'],
@@ -98,7 +91,7 @@ classSchema.pre('save', function (next) {
 classSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
-    select: 'classId studentCardNumber',
+    select: '_id studentCardNumber',
   })
     .populate({
       path: 'reviews',
