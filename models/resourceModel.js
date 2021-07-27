@@ -15,7 +15,7 @@ const resourceSchema = new mongoose.Schema({
 
   resourceType: {
     type: String,
-    enum: ['Resources', 'Examination Paper'],
+    enum: ['Resources', 'Examination Paper', 'Review Paper'],
     default: 'Resources',
   },
 
@@ -51,7 +51,7 @@ const resourceSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: ['pending', 'accepted', 'rejected'],
+    enum: ['pending', 'accepted'],
     default: 'pending',
   },
 }, {

@@ -1,15 +1,14 @@
 const mongoose = require('mongoose');
 
 const instructorSchema = new mongoose.Schema({
-  instructorId: {
-    type: String,
-    required: [true, 'An instructor should have an ID'],
-    unique: [true, 'A unique ID is required'],
-  },
-
   instructorName: {
     type: String,
     required: [true, 'Please provide the name'],
+  },
+
+  nCourses: {
+    type: Number,
+    default: 0,
   },
 
   nClasses: {
@@ -23,8 +22,8 @@ const instructorSchema = new mongoose.Schema({
 
 instructorSchema.virtual('classes', {
   ref: 'Class',
-  localField: 'instructorId',
-  foreignField: 'instructors',
+  localField: '__id',
+  foreignField: 'instructorId',
 });
 
 const Instructor = mongoose.model('Instructor', instructorSchema);

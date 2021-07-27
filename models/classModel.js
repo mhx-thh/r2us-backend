@@ -34,14 +34,13 @@ const classSchema = new mongoose.Schema({
     default: '',
   },
 
-  instructors: {
-    type: [mongoose.Schema.ObjectId],
+  instructorId: {
+    type: mongoose.Schema.ObjectId,
     ref: 'Instructor',
-    minlength: 1,
     required: [true, 'A class must have at least 1 instructor'],
   },
 
-  schoolYear: {
+  academicId: {
     type: mongoose.Schema.ObjectId,
     ref: 'Academic',
     required: [true, 'A class must belong to a school-year'],
@@ -77,7 +76,6 @@ const classSchema = new mongoose.Schema({
   },
 }, {
   timestamps: true,
-  toJSON: { virtuals: true },
   toObject: { virtuals: true },
 });
 
@@ -87,24 +85,6 @@ classSchema.index = ({ slug: 1 });
 
 classSchema.plugin(uniqueValidator, {
   message: 'Error, {VALUE} is already taken',
-});
-
-classSchema.virtual('reviews', {
-  ref: 'Review',
-  localField: '_id',
-  foreignField: 'class',
-});
-
-classSchema.virtual('students', {
-  ref: 'Enroll',
-  localField: '_id',
-  foreignField: 'classId',
-});
-
-classSchema.virtual('resources', {
-  ref: 'Resource',
-  localField: '_id',
-  foreignField: 'classId',
 });
 
 classSchema.plugin(idValidator);

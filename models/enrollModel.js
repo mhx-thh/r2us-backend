@@ -13,6 +13,12 @@ const classRoleSchema = new mongoose.Schema({
     ref: 'Class',
     required: [true, 'Please provide the class ID'],
   },
+
+  role: {
+    type: String,
+    enum: ['member', 'provider'],
+    default: 'member',
+  },
 }, {
   timestamp: true,
   toJSON: { virtuals: true },

@@ -23,19 +23,19 @@ const reviewSchema = new mongoose.Schema({
     default: Date.now,
   },
 
-  user: {
+  userId: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
     required: [true, 'Review must belong to a user'],
   },
 
-  class: {
+  classId: {
     type: mongoose.Schema.ObjectId,
     ref: 'Class',
     required: [true, 'A review must belong to a class'],
   },
 
-  instructor: {
+  instructorId: {
     type: mongoose.Schema.ObjectId,
     ref: 'Instructor',
     required: [true, 'A review must belong to a instructor'],
