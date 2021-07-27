@@ -2,23 +2,27 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const roleSchema = new mongoose.Schema({
-  roleId: {
-    type: String,
-    default: '',
+  userId: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
     required: true,
-    unique: [true, 'This role has been included in this list'],
   },
 
-  roleName: {
-    type: String,
-    enum: ['student', 'provider'],
-    default: 'student',
+  date: {
+    type: Date,
+    default: Date.now,
   },
 
-  roleDescription: {
-    type: String,
-    default: '',
+  nCourses: {
+    type: Number,
+    default: 0,
   },
+});
+
+roleSchema.virtual('classes', {
+  ref: 'Enroll',
+  localField: 'userId',
+  foreignField: 'userId',
 });
 
 roleSchema.plugin(uniqueValidator, {

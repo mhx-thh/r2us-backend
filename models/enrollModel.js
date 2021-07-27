@@ -13,12 +13,6 @@ const classRoleSchema = new mongoose.Schema({
     ref: 'Class',
     required: [true, 'Please provide the class ID'],
   },
-
-  roleId: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'Role',
-    required: [true, 'Each user must have a role'],
-  },
 }, {
   timestamp: true,
   toJSON: { virtuals: true },

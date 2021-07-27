@@ -57,6 +57,21 @@ const classSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+
+  nStudents: {
+    type: Number,
+    default: 0,
+  },
+
+  nResource: {
+    type: Number,
+    default: 0,
+  },
+
+  nReviews: {
+    type: Number,
+    default: 0,
+  },
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
@@ -72,8 +87,20 @@ classSchema.plugin(uniqueValidator, {
 
 classSchema.virtual('reviews', {
   ref: 'Review',
+  localField: '_id',
   foreignField: 'class',
-  localField: 'ClassId',
+});
+
+classSchema.virtual('students', {
+  ref: 'Enroll',
+  localField: '_id',
+  foreignField: 'classId',
+});
+
+classSchema.virtual('resources', {
+  ref: 'Resource',
+  localField: '_id',
+  foreignField: 'classId',
 });
 
 classSchema.plugin(idValidator);
