@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 const uniqueValidator = require('mongoose-unique-validator');
 const idValidator = require('mongoose-id-validator');
 const convVie = require('../utils/convVie');
@@ -23,6 +24,8 @@ const classSchema = new mongoose.Schema({
     type: String,
     select: false,
   },
+
+  slug: String,
 
   courseId: {
     type: mongoose.Schema.ObjectId,
@@ -78,8 +81,9 @@ const classSchema = new mongoose.Schema({
   toObject: { virtuals: true },
 });
 
-classSchema.index = ({ className: 'text' });
+classSchema.index = ({ description: 'text' });
 classSchema.index = ({ classId: 1, courseId: 1 }, { unique: true });
+classSchema.index = ({ slug: 1 });
 
 classSchema.plugin(uniqueValidator, {
   message: 'Error, {VALUE} is already taken',
@@ -104,6 +108,12 @@ classSchema.virtual('resources', {
 });
 
 classSchema.plugin(idValidator);
+
+classSchema.pre('save', function (next) {
+  this.description = convVie(this.className);
+  this.slug = slugify(this.description, { lower: true });
+  next();
+});
 
 classSchema.pre(/^find/, function (next) {
   this.populate({

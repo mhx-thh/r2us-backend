@@ -6,3 +6,5 @@ exports.getRole = factory.getOne(Role);
 exports.createRole = factory.createOne(Role);
 exports.editRole = factory.updateOne(Role);
 exports.deleteRole = factory.deleteOne(Role);
+
+// Middleware
