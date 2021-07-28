@@ -8,9 +8,7 @@ const facultySchema = new mongoose.Schema({
     default: '',
   },
 
-  facultyDescription: {
-    type: String,
-  },
+  facultyDescription: String,
 });
 
 facultySchema.index = ({ facultyName: 'text' });

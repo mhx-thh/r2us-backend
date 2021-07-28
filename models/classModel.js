@@ -91,7 +91,7 @@ classSchema.pre('save', function (next) {
 classSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
-    select: '_id studentCardNumber',
+    select: 'studentCardNumber',
   })
     .populate({
       path: 'reviews',

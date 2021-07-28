@@ -61,7 +61,7 @@ courseSchema.plugin(idValidator);
 courseSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'class',
-    select: 'className schoolyear instructors',
+    select: 'className courseName schoolyear instructors',
   });
   next();
 });

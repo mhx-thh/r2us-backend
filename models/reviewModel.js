@@ -41,7 +41,6 @@ const reviewSchema = new mongoose.Schema({
     required: [true, 'A review must belong to a instructor'],
   },
 }, {
-  toJSON: { virtuals: true },
   toObject: { virtuals: true },
 });
 
