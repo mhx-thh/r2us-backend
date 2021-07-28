@@ -12,8 +12,8 @@ const hpp = require('hpp');
 
 const userRouter = require('./routes/userRouter');
 const authRouter = require('./routes/authRouter');
-const classRouter = require('./routes/classRouter');
-const academicRouter = require('./routes/academicRouter');
+// const classRouter = require('./routes/classRouter');
+// const academicRouter = require('./routes/academicRouter');
 // TOTO: insert router
 const docsRouter = require('./routes/docsRouter');
 
@@ -100,8 +100,8 @@ if (process.env.NODE_ENV === 'development') {
 // 2 ROUTES
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/classes', classRouter);
-app.use('/api/v1/schoolyear', academicRouter);
+// app.use('/api/v1/classes', classRouter);
+// app.use('/api/v1/schoolyear', academicRouter);
 // TODO: use route here
 app.use('/api/v1/api-docs', docsRouter);
 
