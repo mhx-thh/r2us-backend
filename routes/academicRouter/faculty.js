@@ -4,25 +4,14 @@ const facultyController = require('../../controller/facultyCtrl');
 
 const router = express.Router();
 
-router
-  .route('/')
-  .get(facultyController.getAllFaculty)
-  .post(
-    authController.protect,
-    authController.restrictTo('admin'),
-    facultyController.createFaculty,
-  );
+router.get('/getAll', facultyController.getAllFaculty);
+router.get('/getFaculty/:id', facultyController.getFaculty);
 
-router
-  .route('/:id')
-  .get(facultyController.getFaculty)
-  .patch(
-    authController.protect,
-    authController.restrictTo('admin'),
-    facultyController.updateFaculty,
-  )
-  .delete(
-    authController.protect,
-    authController.restrictTo('admin'),
-    facultyController.deleteFaculty,
-  );
+router.use(authController.protect);
+router.use(authController.restrictTo('admin'));
+
+router.route('/createFaculty').post(facultyController.createFaculty);
+router.route('/updateFaculty/:id').patch(facultyController.updateFaculty);
+router.route('/deleteFaculty/:id').delete(facultyController.deleteFaculty);
+
+module.exports = router;

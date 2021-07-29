@@ -8,3 +8,5 @@ const router = express.Router();
 router.use('/course', courseRouter);
 router.use('/faculty', facultyRouter);
 router.use('/academic', academicRouter);
+
+module.exports = router;

@@ -2,12 +2,6 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const academicSchema = new mongoose.Schema({
-  academicId: {
-    type: String,
-    unique: true,
-    required: [true, 'Please provide the ID'],
-  },
-
   schoolyear: {
     type: String,
     default: '',

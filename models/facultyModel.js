@@ -11,8 +11,6 @@ const facultySchema = new mongoose.Schema({
   facultyDescription: String,
 });
 
-facultySchema.index = ({ facultyName: 'text' });
-
 facultySchema.plugin(uniqueValidator, {
   message: 'Error, {VALUE} is already taken',
 });

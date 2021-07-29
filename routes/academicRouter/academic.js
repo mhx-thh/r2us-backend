@@ -4,25 +4,16 @@ const academicController = require('../../controller/academicCtrl');
 
 const router = express.Router();
 
-router
-  .route('/')
-  .get(academicController.getAllAcademics)
-  .post(
-    authController.protect,
-    authController.restrictTo('admin'),
-    academicController.createAcademic,
-  );
+router.get('/getAll', academicController.getAllAcademics);
+router.get('/getAcademic/:id', academicController.getAcademic);
 
-router
-  .route('/:id')
-  .get(academicController.getAcademic)
-  .patch(
-    authController.protect,
-    authController.restrictTo('admin'),
-    academicController.updateAcademic,
-  )
-  .delete(
-    authController.protect,
-    authController.restrictTo('admin'),
-    academicController.deleteAcademic,
-  );
+// Most secure router
+router.use(authController.protect);
+router.use(authController.restrictTo('admin'));
+
+router.route('/createAcademic').post(academicController.createAcademic);
+
+router.route('/updateAcademic/:id').patch(academicController.updateAcademic);
+router.route('/deleteAcademic/:id').delete(academicController.deleteAcademic);
+
+module.exports = router;

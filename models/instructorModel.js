@@ -6,24 +6,20 @@ const instructorSchema = new mongoose.Schema({
     required: [true, 'Please provide the name'],
   },
 
-  nCourses: {
-    type: Number,
-    default: 0,
+  courseId: {
+    type: [mongoose.Schema.ObjectId],
+    ref: 'Course',
+    minlength: 1,
   },
 
-  nClasses: {
-    type: Number,
-    default: 0,
+  classId: {
+    type: [mongoose.Schema.ObjectId],
+    ref: 'Class',
+    minlength: 1,
   },
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
-});
-
-instructorSchema.virtual('classes', {
-  ref: 'Class',
-  localField: '__id',
-  foreignField: 'instructorId',
 });
 
 const Instructor = mongoose.model('Instructor', instructorSchema);

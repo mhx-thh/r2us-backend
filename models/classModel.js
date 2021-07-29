@@ -57,23 +57,15 @@ const classSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-
-  nResource: {
-    type: Number,
-    default: 0,
-  },
-
-  nReviews: {
-    type: Number,
-    default: 0,
-  },
 }, {
   timestamps: true,
   toObject: { virtuals: true },
 });
 
 classSchema.index = ({ description: 'text' });
-classSchema.index = ({ classId: 1, courseId: 1 }, { unique: true });
+classSchema.index = ({ __id: 1, courseId: 1 }, { unique: true });
+classSchema.index = ({ __id: 1, instructorId: 1 });
+classSchema.index = ({ __id: 1, academicId: 1 });
 classSchema.index = ({ slug: 1 });
 
 classSchema.plugin(uniqueValidator, {

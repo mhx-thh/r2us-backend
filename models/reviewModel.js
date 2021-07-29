@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-const idValidator = require('mongoose-id-validator');
 const uniqueValidator = require('mongoose-unique-validator');
-const Course = require('./courseModel');
 
 const reviewSchema = new mongoose.Schema({
   review: {
@@ -9,18 +7,6 @@ const reviewSchema = new mongoose.Schema({
     unique: true,
     required: [true, 'A review cannot be empty'],
     default: '',
-  },
-
-  reviewRating: {
-    type: Number,
-    min: 1,
-    max: 5,
-    required: [true, 'A review should have a rating'],
-  },
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
   },
 
   userId: {
@@ -41,11 +27,12 @@ const reviewSchema = new mongoose.Schema({
     required: [true, 'A review must belong to a instructor'],
   },
 }, {
+  timestamps: true,
   toObject: { virtuals: true },
 });
 
-// One user can review only a class
-reviewSchema.index({ class: 1, user: 1 });
+// One review will be from a user
+reviewSchema.index({ _id: 1, user: 1 });
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'User',
@@ -53,48 +40,6 @@ reviewSchema.pre(/^find/, function (next) {
   });
 
   next();
-});
-
-reviewSchema.plugin(idValidator);
-
-reviewSchema.statics.calcAverageRatings = async function (classId) {
-  const stats = await this.aggregate([
-    {
-      $match: { course: classId },
-    },
-    {
-      $group: {
-        _id: '$class',
-        nRating: { $sum: 1 },
-        avgRating: { $avg: '$rating' },
-      },
-    },
-  ]);
-
-  if (stats.length > 0) {
-    await Course.findByIdAndUpdate(classId, {
-      ratingsQuantity: stats[0].nRating,
-      ratingsAverage: stats[0].avgRating,
-    });
-  } else {
-    await Course.findByIdAndUpdate(classId, {
-      ratingsQuantity: 0,
-      ratingsAverage: 4.5,
-    });
-  }
-};
-
-reviewSchema.post('save', function () {
-  this.constructor.calcAverageRatings(this.class);
-});
-
-reviewSchema.pre(/^findOneAnd/, async function (next) {
-  this.r = await this.findOne();
-  next();
-});
-
-reviewSchema.post(/^findOneAnd/, async function () {
-  await this.r.constructor.calcAverageRatings(this.r.class);
 });
 
 reviewSchema.plugin(uniqueValidator, {

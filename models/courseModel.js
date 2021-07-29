@@ -28,11 +28,11 @@ const courseSchema = new mongoose.Schema({
     select: false,
   },
 
-  nClasses: {
-    type: Number,
-    default: 0,
+  classId: {
+    type: [mongoose.Schema.ObjectId],
+    ref: 'Course',
+    minlength: 1,
   },
-
 }, {
   toObject: { virtuals: true },
 });
@@ -41,15 +41,9 @@ courseSchema.index = ({ description: 'text' });
 courseSchema.index = ({ courseId: 1, facultyId: 1 });
 courseSchema.index = ({ slug: 1 });
 
-courseSchema.virtual('classes', {
-  ref: 'Class',
-  localField: '_id',
-  foreignField: '_id',
-});
-
 courseSchema.pre('save', function (next) {
-  this.description = convVie(this.className);
-  this.slug = slugify(this.description, { lower: true });
+  this.courseDescription = convVie(this.courseName);
+  this.slug = slugify(this.courseDescription, { lower: true });
   next();
 });
 
@@ -69,7 +63,7 @@ courseSchema.pre(/^find/, function (next) {
 courseSchema.pre(/findOneAndUpdate|updateOne|update/, function (next) {
   const docUpdate = this.getUpdate();
   if (!docUpdate || !docUpdate.courseName) return next();
-  this.findOneAndUpdate({}, { description: convVie(docUpdate.courseName).toLowercase() });
+  this.findOneAndUpdate({}, { courseDescription: convVie(docUpdate.courseName).toLowercase() });
   return next();
 });
 
