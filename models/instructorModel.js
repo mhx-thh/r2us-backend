@@ -9,13 +9,13 @@ const instructorSchema = new mongoose.Schema({
   courseId: {
     type: [mongoose.Schema.ObjectId],
     ref: 'Course',
-    minlength: 1,
+    minlength: 0,
   },
 
   classId: {
     type: [mongoose.Schema.ObjectId],
     ref: 'Class',
-    minlength: 1,
+    minlength: 0,
   },
 }, {
   toJSON: { virtuals: true },

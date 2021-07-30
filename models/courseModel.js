@@ -27,12 +27,6 @@ const courseSchema = new mongoose.Schema({
     type: String,
     select: false,
   },
-
-  classId: {
-    type: [mongoose.Schema.ObjectId],
-    ref: 'Course',
-    minlength: 1,
-  },
 }, {
   toObject: { virtuals: true },
 });

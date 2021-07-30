@@ -1,5 +1,6 @@
 const Instructor = require('../models/instructorModel');
 const factory = require('../utils/handlerFactory');
+// const sendResponse = require('../utils/sendResponse');
 
 exports.getAllInstructors = factory.getAll(Instructor);
 exports.getInstructor = factory.getOne(Instructor);
