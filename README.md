@@ -24,14 +24,14 @@ Một dự án của Mặt trận Tin học hóa - Chiến dịch Tình nguyện
 
 | API         | Đường dẫn   |   Thông số    |    Trạng thái  |
 | :----:      |    :----:   |     :----:    |      :----:    |
-| Academic    | /academic   | Năm học       |   Đã hoàn thành|   
-| Faculty     | /academic/faculties   | Khoa          |   Đã hoàn thành|
-| Courses     | /academic/courses            | Môn trong khoa|   Đã hoàn thành|
-| Classes     | /classes            | Lớp thuộc môn |   Đang kiểm tra|
-| Instructors | /classes/instructors            | Giảng viên    |   Đã hoàn thành|
+| Academic    | /academic   | Năm học       |   **Đã hoàn thành**|   
+| Faculty     | /academic/faculties   | Khoa          |   **Đã hoàn thành**|
+| Courses     | /academic/courses            | Môn trong khoa|   **Đã hoàn thành**|
+| Classes     | /classes            | Lớp thuộc môn |   ***Đang kiểm tra***|
+| Instructors | /classes/instructors            | Giảng viên    |   **Đã hoàn thành**|
 | Resources   | /classes/resources            | Tài liệu      |   Đang xây dựng|
 | Reviews     | /classes/reviews            | Cảm nhận      |   Đang xây dựng|
-| Enrollment  | /classes/enrollment           | Tham gia lớp  |   Đang kiểm tra|
+| Enrollment  | /classes/enrollment           | Tham gia lớp  |   ***Đang kiểm tra***|
 
 # Something silly for developers :>
 - [x] Improvement: Trải nghiệm người dùng (Đăng nhập OAuth2 qua Google).
