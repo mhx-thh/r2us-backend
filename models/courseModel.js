@@ -50,10 +50,9 @@ courseSchema.plugin(uniqueValidator, {
 courseSchema.plugin(idValidator);
 courseSchema.pre(/^find/, function (next) {
   this.populate({
-    path: 'class',
-    select: 'className courseName schoolyear instructors',
+    path: 'facultyId',
+    select: 'facultyName _id',
   });
-  next();
 });
 
 courseSchema.pre(/findOneAndUpdate|updateOne|update/, function (next) {
