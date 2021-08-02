@@ -18,7 +18,7 @@ Một dự án của Mặt trận Tin học hóa - Chiến dịch Tình nguyện
 * Hiện tại đang chạy web server tại địa chỉ [Heroku](https://greensummer2021-r2us.herokuapp.com)
 
 # API Docs
-* Toàn bộ các API đều được đăng tải tại đây.
+* Toàn bộ các API đều được đăng tải tại [đây](https://docs.google.com/document/d/18dnkfyrRk_qcTNM6WYK0LX1_sp5L3RQ8eouSl3tnuKc/edit?usp=sharing).
 * Bảng thông số API: 
 * Đường dẫn: {URL}/api/v1
 
