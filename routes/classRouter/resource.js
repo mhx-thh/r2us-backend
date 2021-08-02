@@ -5,12 +5,14 @@ const enrollController = require('../../controller/enrollCtrl');
 
 const router = express.Router();
 
-router.get('/getAll', resourceController.getAllResources);
-router.get('/getResources/:id', resourceController.getResource);
+router.get('/', resourceController.getAllResources);
+router.get('/:slug', resourceController.getResourceBySlug);
 
 router.use(authController.protect);
 router.use(enrollController.protect);
 router.use(enrollController.restrictTo('provider'));
-router.route('/createResource').post(resourceController.createResource);
-router.route('/updateResource/:id').patch(resourceController.updateResource);
-router.route('/deleteResource/:id').delete(resourceController.deleteResource);
+router.route('/create').post(resourceController.createResource);
+router.route('/update/:id').patch(resourceController.updateResource);
+router.route('/delete/:id').delete(resourceController.deleteResource);
+
+module.exports = router;
