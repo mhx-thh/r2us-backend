@@ -4,13 +4,13 @@ const classController = require('../../controller/classCtrl');
 
 const router = express.Router();
 
-router.get('/getAll', classController.getAllClasses);
-router.get('/getClass/:slug', classController.getClassBySlug);
-router.get('/search/:description', classController.searchByDescription);
-// router.use(authController.protect);
-// router.use(authController.restrictTo('user', 'admin'));
-router.route('/createClass').post(classController.createClass);
-router.route('/updateClass/:slug').patch(classController.updateClass);
-router.route('/deleteClass/:slug').delete(classController.deleteClass);
+router.get('/', classController.getAllClasses);
+router.get('/:slug', classController.getClassBySlug);
+router.get('/search', classController.searchByDescription, classController.getAllClasses);
+router.get('/new-classes', classController.getNewClasses, classController.getAllClasses);
+
+router.route('/create').post(classController.checkExistence, classController.createClass);
+router.route('/update/:id').patch(classController.updateClass);
+router.route('/delete/:id').delete(classController.deleteClass);
 
 module.exports = router;

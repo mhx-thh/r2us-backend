@@ -1,4 +1,9 @@
 const mongoose = require('mongoose');
+const { StatusCodes } = require('http-status-codes');
+const uniqueValidator = require('mongoose-unique-validator');
+const idValidator = require('mongoose-id-validator');
+const AppError = require('../utils/appError');
+const classModel = require('./classModel');
 
 const instructorSchema = new mongoose.Schema({
   instructorName: {
@@ -20,6 +25,36 @@ const instructorSchema = new mongoose.Schema({
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
+});
+
+instructorSchema.plugin(uniqueValidator, {
+  message: 'Error, {VALUE} is already taken.',
+});
+
+instructorSchema.plugin(idValidator);
+
+instructorSchema.pre(/^find/, async function (next) {
+  this.populate({
+    path: 'courseId',
+    select: 'courseName _id',
+  }).populate({
+    path: 'classId',
+    select: 'className _id, academicId',
+  });
+  next();
+});
+
+instructorSchema.pre(/findOneAndUpdate|updateOne|update/, async function (next) {
+  const docUpdate = this.getUpdate();
+  if (!docUpdate || !docUpdate.instructorName) return next();
+  const classExists = await classModel.findById(this.classId).then(
+    (courseFound) => {
+      if (!courseFound) return next(new AppError('Course not found', StatusCodes.NOT_FOUND));
+      return courseFound.toJSON();
+    },
+  );
+  this.findOneAndUpdate({}, { courseId: classExists.courseId, classId: classExists._id });
+  return next();
 });
 
 const Instructor = mongoose.model('Instructor', instructorSchema);

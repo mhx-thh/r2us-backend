@@ -5,8 +5,8 @@ const facultyRouter = require('./faculty');
 
 const router = express.Router();
 
-router.use('/course', courseRouter);
-router.use('/faculty', facultyRouter);
-router.use('/academic', academicRouter);
+router.use('/courses', courseRouter);
+router.use('/faculties', facultyRouter);
+router.use('/', academicRouter);
 
 module.exports = router;

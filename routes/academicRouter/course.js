@@ -1,16 +1,17 @@
 const express = require('express');
-// const authController = require('../../controller/authCtrl');
+const authController = require('../../controller/authCtrl');
 const courseController = require('../../controller/courseCtrl');
 
 const router = express.Router();
 
-router.get('/getAll', courseController.getAllCourses);
-router.get('/getCourse/:slug', courseController.getCourseBySlug);
+router.get('/', courseController.getAllCourses);
+router.get('/:slug', courseController.getCourseBySlug);
 
-// router.use(authController.protect);
-// router.use(authController.restrictTo('admin'));
-router.route('/createCourse').post(courseController.createCourse);
-router.route('/updateCourse/:id').patch(courseController.updateCourse);
-router.route('/deleteCourse/:id').delete(courseController.deleteCourse);
+router.use(authController.protect);
+router.use(authController.restrictTo('admin'));
+
+router.route('/create').post(courseController.checkValidation, courseController.createCourse);
+router.route('/update/:id').patch(courseController.updateCourse);
+router.route('/delete/:id').delete(courseController.deleteCourse);
 
 module.exports = router;

@@ -3,6 +3,8 @@ const slugify = require('slugify');
 const uniqueValidator = require('mongoose-unique-validator');
 const idValidator = require('mongoose-id-validator');
 const convVie = require('../utils/convVie');
+const classModel = require('./classModel');
+const instructorModel = require('./instructorModel');
 
 const courseSchema = new mongoose.Schema({
   courseName: {
@@ -61,5 +63,13 @@ courseSchema.pre(/findOneAndUpdate|updateOne|update/, function (next) {
   return next();
 });
 
+courseSchema.post(
+  /findOneAndDelete|findOneAndRemove|deleteOne|remove/,
+  { document: true, query: true },
+  async (result) => {
+    await classModel.deleteMany({ courseId: result._id });
+    await instructorModel.updateMany({}, { $pull: { courseId: result._id } });
+  },
+);
 const Course = mongoose.model('Course', courseSchema);
 module.exports = Course;

@@ -2,8 +2,14 @@ const mongoose = require('mongoose');
 const slugify = require('slugify');
 const uniqueValidator = require('mongoose-unique-validator');
 const idValidator = require('mongoose-id-validator');
+const { StatusCodes } = require('http-status-codes');
+const AppError = require('../utils/appError');
 const convVie = require('../utils/convVie');
 const reviewModel = require('./reviewModel');
+const resourceModel = require('./resourceModel');
+const courseModel = require('./courseModel');
+const enrollModel = require('./enrollModel');
+const instructorModel = require('./instructorModel');
 
 const classSchema = new mongoose.Schema({
   className: {
@@ -74,28 +80,42 @@ classSchema.plugin(uniqueValidator, {
 
 classSchema.plugin(idValidator);
 
-classSchema.pre('save', function (next) {
-  this.description = convVie(this.className);
-  this.slug = slugify(this.description, { lower: true });
+classSchema.pre('save', async function (next) {
+  const course = await courseModel.findById(this.courseId).then(
+    (courseFound) => {
+      if (!courseFound) return next(new AppError('Course not found', StatusCodes.NOT_FOUND));
+      return courseFound.toJSON();
+    },
+  );
+  this.description = convVie(course.courseName).toLowerCase();
+  this.slug = slugify(convVie(this.className), { lower: true });
   next();
 });
 
 classSchema.pre(/^find/, function (next) {
   this.populate({
-    path: 'user',
-    select: 'studentCardNumber',
-  })
-    .populate({
-      path: 'reviews',
-      select: '_id createdAt',
-    });
+    path: 'courseId',
+    select: 'courseName _id',
+  }).populate({
+    path: 'academicId',
+    select: 'schoolyear semester -_id',
+  }).populate({
+    path: 'instructorId',
+    select: 'instructorName -_id',
+  });
   next();
 });
 
-classSchema.pre(/findOneAndUpdate|updateOne|update/, function (next) {
+classSchema.pre(/findOneAndUpdate|updateOne|update/, async function (next) {
   const docUpdate = this.getUpdate();
   if (!docUpdate || !docUpdate.className) return next();
-  this.findOneAndUpdate({}, { description: convVie(docUpdate.className).toLowercase() });
+  const course = await courseModel.findById(this.courseId).then(
+    (courseFound) => {
+      if (!courseFound) return next(new AppError('Course not found', StatusCodes.NOT_FOUND));
+      return courseFound.toJSON();
+    },
+  );
+  this.findOneAndUpdate({}, { description: convVie(course.courseName).toLowercase() });
   return next();
 });
 
@@ -103,7 +123,10 @@ classSchema.post(
   /findOneAndDelete|findOneAndRemove|deleteOne|remove/,
   { document: true, query: true },
   async (result) => {
-    await reviewModel.deleteMany({ review: result._id });
+    await reviewModel.deleteMany({ classId: result._id });
+    await resourceModel.deleteMany({ classId: result._id });
+    await enrollModel.deleteMany({ classId: result._id });
+    await instructorModel.updateMany({}, { $pull: { classId: result._id } });
   },
 );
 const Class = mongoose.model('Class', classSchema);

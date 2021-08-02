@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 const uniqueValidator = require('mongoose-unique-validator');
 const idValidator = require('mongoose-id-validator');
 const { StatusCodes } = require('http-status-codes');
@@ -29,6 +30,8 @@ const resourceSchema = new mongoose.Schema({
     default: '',
     select: false,
   },
+
+  slug: String,
 
   classId: {
     type: mongoose.Schema.ObjectId,
@@ -62,6 +65,8 @@ resourceSchema.plugin(uniqueValidator, {
 resourceSchema.plugin(idValidator);
 resourceSchema.pre('save', async function (next) {
   this.resourceDescription = convVie(this.resourceName).toLowerCase();
+  this.slug = slugify(this.resourceDescription, { lower: true });
+  next();
 });
 
 resourceSchema.pre(/findOneAndUpdate|updateOne|update/, function (next) {

@@ -4,14 +4,14 @@ const instructorController = require('../../controller/instructorCtrl');
 
 const router = express.Router();
 
-router.get('/getAll', instructorController.getAllInstructors);
-router.get('/getInstructor/:id', instructorController.getInstructor);
+router.get('/', instructorController.getAllInstructors);
+router.get('/:id', instructorController.getInstructor);
 
 router.use(authController.protect);
 router.use(authController.restrictTo('admin'));
 
-router.route('/createInstructor').post(instructorController.createInstructor);
-router.route('/updateInstructor/:id').patch(instructorController.updateInstructor);
-router.route('/deleteInstructor/:id').delete(instructorController.deleteInstructor);
+router.route('/create').post(instructorController.createInstructor);
+router.route('/update/:id').patch(instructorController.updateInstructor);
+router.route('/delete/:id').delete(instructorController.deleteInstructor);
 
 module.exports = router;

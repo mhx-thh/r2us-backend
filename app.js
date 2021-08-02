@@ -101,7 +101,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/classes', classRouter);
-app.use('/api/v1/schoolyear', academicRouter);
+app.use('/api/v1/academic', academicRouter);
 // TODO: use route here
 app.use('/api/v1/api-docs', docsRouter);
 

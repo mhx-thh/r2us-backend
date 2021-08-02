@@ -1,7 +1,18 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 const uniqueValidator = require('mongoose-unique-validator');
+const idValidator = require('mongoose-id-validator');
+const convVie = require('../utils/convVie');
 
 const reviewSchema = new mongoose.Schema({
+  reviewTitle: {
+    type: String,
+    required: [true, 'A review must have a title'],
+    default: 'Review',
+  },
+
+  description: String,
+
   review: {
     type: String,
     unique: true,
@@ -32,18 +43,30 @@ const reviewSchema = new mongoose.Schema({
 });
 
 // One review will be from a user
-reviewSchema.index({ _id: 1, user: 1 });
+reviewSchema.index({ _id: 1, userId: 1 });
+reviewSchema.index({ description: 'text' });
+reviewSchema.plugin(uniqueValidator, {
+  message: 'Error, {VALUE} is already taken',
+});
+
+reviewSchema.plugin(idValidator);
+reviewSchema.pre('save', async function (next) {
+  this.description = slugify(convVie(this.reviewTitle), { lower: true });
+  next();
+});
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
-    path: 'User',
+    path: 'userId',
     select: '_id studentCardNumber photo',
+  }).populate({
+    path: 'classId',
+    select: '_id className academicId',
+  }).populate({
+    path: 'instructorId',
+    select: '_id instructorName',
   });
 
   next();
-});
-
-reviewSchema.plugin(uniqueValidator, {
-  message: 'Error, {VALUE} is already taken',
 });
 
 const Review = mongoose.model('Review', reviewSchema);

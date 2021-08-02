@@ -6,9 +6,7 @@ const router = express.Router();
 
 router.use(authController.protect);
 
-router
-  .route('/')
-  .get(reviewController.getAllReviews)
+router.route('/').get(reviewController.getAllReviews)
   .post(
     authController.restrictTo('user'),
     reviewController.setClassUserIds,
