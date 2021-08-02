@@ -53,6 +53,7 @@ courseSchema.pre(/^find/, function (next) {
     path: 'facultyId',
     select: 'facultyName _id',
   });
+  next();
 });
 
 courseSchema.pre(/findOneAndUpdate|updateOne|update/, function (next) {
