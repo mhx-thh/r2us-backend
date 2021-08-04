@@ -29,7 +29,7 @@ Một dự án của Mặt trận Tin học hóa - Chiến dịch Tình nguyện
 | Courses     | /academic/courses            | Môn trong khoa|   **Đã hoàn thành**|
 | Classes     | /classes            | Lớp thuộc môn |   ***Đang kiểm tra***|
 | Instructors | /classes/instructors            | Giảng viên    |   **Đã hoàn thành**|
-| Resources   | /classes/resources            | Tài liệu      |   Đang xây dựng|
+| Resources   | /classes/resources            | Tài liệu      |   ***Đang kiểm tra***|
 | Reviews     | /classes/reviews            | Cảm nhận      |   Đang xây dựng|
 | Enrollment  | /classes/enrollment           | Tham gia lớp  |   ***Đang kiểm tra***|
 
