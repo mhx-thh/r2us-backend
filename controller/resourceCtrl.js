@@ -26,6 +26,9 @@ exports.searchByDescription = async function (req, res, next) {
 };
 
 exports.acceptResource = async function (req, res, next) {
-  const resourceIn = await Resource.findByIdAndUpdate(req.query.id, { status: 'accepted' }, { returnOriginal: false });
+  const resourceIn = await Resource.findByIdAndUpdate(req.params.id, { status: 'accepted' }, {
+    new: true,
+    runValidators: true,
+  });
   return sendResponse(resourceIn, StatusCodes.OK, res);
 };

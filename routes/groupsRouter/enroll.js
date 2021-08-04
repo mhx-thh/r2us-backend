@@ -1,7 +1,7 @@
 const express = require('express');
 const authController = require('../../controller/authCtrl');
 const enrollController = require('../../controller/enrollCtrl');
-const userController = require('../../controller/userCtrl');
+// const userController = require('../../controller/userCtrl');
 
 const router = express.Router();
 
@@ -11,11 +11,8 @@ router.use(authController.protect);
 // Get based on class
 router.get('/:slug', enrollController.getSlug, enrollController.getAllEnrollment);
 
-// Middleware: Only enroll, get, update, delete enroll by oneself
-router.use(userController.getMe);
-
 // Get my enrollment
-router.get('/me', enrollController.getEnrollment);
+router.get('/me', enrollController.getMe, enrollController.getAllEnrollment);
 
 // Create an enrollment
 router.post('/create', enrollController.createEnrollment);

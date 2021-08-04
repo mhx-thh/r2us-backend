@@ -15,6 +15,7 @@ const classSchema = new mongoose.Schema({
   className: {
     type: String,
     required: [true, 'A class should have a name'],
+    unique: true,
     trim: true,
     default: '',
   },

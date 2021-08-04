@@ -12,6 +12,11 @@ exports.createEnrollment = factory.createOne(Enroll);
 exports.updateEnrollment = factory.updateOne(Enroll);
 exports.deleteEnrollment = factory.deleteOne(Enroll);
 
+exports.getMe = (req, res, next) => {
+  req.query.userId = req.user.id;
+  next();
+};
+
 exports.protect = catchAsync(async (req, res, next) => {
   const isEnrolled = await Enroll.findOne(
     { userId: req.body.userId, classId: req.body.classId },
@@ -19,12 +24,13 @@ exports.protect = catchAsync(async (req, res, next) => {
   if (!isEnrolled) {
     return next(new AppError('You are not enrolled', StatusCodes.UNAUTHORIZED));
   }
-  req.user = isEnrolled;
+  req.userEnroll = isEnrolled;
   return next();
 });
 
 exports.restrictTo = (...roles) => (req, res, next) => {
-  if (!roles.includes(req.user.role)) {
+  if (req.user.role === 'admin') return next();
+  if (!roles.includes(req.userEnroll.role)) {
     return next(
       new AppError(
         'You do not have permission to do this action',
@@ -56,8 +62,8 @@ exports.advanceToProvider = catchAsync(async (req, res, next) => {
 });
 
 exports.checkPermission = catchAsync(async (req, res, next) => {
-  const enrollment = await Enroll.find({ userId: req.body.userId, classId: req.body.classId });
-  if (enrollment.role === 'member' || enrollment.role === 'provider') return next(new AppError('You are already a member of this class now', StatusCodes.NOT_MODIFIED));
+  const enrollment = await Enroll.findOne({ id: req.params.id });
+  if (enrollment.role === 'member' || enrollment.role === 'provider') return next(new AppError('Already a member of this class', StatusCodes.NOT_MODIFIED));
   return next();
 });
 

@@ -13,14 +13,13 @@ router.get('/new-groups', classController.getNewClasses, classController.getAllC
 // User can create class
 router.use(authController.protect);
 router.use(authController.restrictTo('user'));
-router.route('/create').post(classController.checkExistence, classController.createClass);
+router.route('/create').post(classController.createClass);
 
 // Provider can update class
 router.route('/update/:id')
   .patch(
     enrollController.protect,
     enrollController.restrictTo('provider'),
-    classController.checkExistence,
     classController.updateClass,
   );
 
