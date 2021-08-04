@@ -11,7 +11,7 @@ router.get('/:id', academicController.getAcademic);
 router.use(authController.protect);
 router.use(authController.restrictTo('admin'));
 
-router.route('/create').post(academicController.checkValidation, academicController.createAcademic);
+router.route('/create').post(academicController.createAcademic);
 router.route('/update/:id').patch(academicController.updateAcademic);
 router.route('/delete/:id').delete(academicController.deleteAcademic);
 
