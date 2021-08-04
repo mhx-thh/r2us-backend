@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const slugify = require('slugify');
 const uniqueValidator = require('mongoose-unique-validator');
 const idValidator = require('mongoose-id-validator');
-const { StatusCodes } = require('http-status-codes');
+// const { StatusCodes } = require('http-status-codes');
 const convVie = require('../utils/convVie');
-const AppError = require('../utils/appError');
+// const AppError = require('../utils/appError');
 
 const resourceSchema = new mongoose.Schema({
   resourceType: {
@@ -22,6 +22,7 @@ const resourceSchema = new mongoose.Schema({
 
   resourceLink: {
     type: String,
+    unique: true,
     default: '',
   },
 
@@ -71,20 +72,10 @@ resourceSchema.pre('save', async function (next) {
 
 resourceSchema.pre(/findOneAndUpdate|updateOne|update/, function (next) {
   const docUpdate = this.getUpdate();
-  if (!docUpdate || docUpdate.resourceName) return next();
+  if (!docUpdate || !docUpdate.resourceName) return next();
   this.findOneAndUpdate({}, { resourceDescription: convVie(docUpdate.resourceName).toLowerCase() });
   return next();
 });
-
-resourceSchema.methods.acceptResource = async function () {
-  const resourceIn = await this.model('Class').findOne({ resource: this.resourceId });
-  if (!resourceIn) throw new AppError('This class do not have any resource', StatusCodes.NOT_FOUND);
-};
-
-resourceSchema.methods.rejectResource = async function () {
-  const resourceIn = await this.model('Class').findOne({ resource: this.resourceId });
-  if (!resourceIn) throw new AppError('This class do not have any resource', StatusCodes.NOT_FOUND);
-};
 
 const Resources = mongoose.model('Resources', resourceSchema);
 module.exports = Resources;

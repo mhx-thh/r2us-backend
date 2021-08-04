@@ -17,7 +17,12 @@ exports.getNewClasses = (req, res, next) => {
 };
 
 exports.checkExistence = async function (req, res, next) {
-  await Class.find({ className: req.body.className }).then(
+  await Class.find({
+    className: req.body.className,
+    courseId: req.body.courseId,
+    instructorId: req.body.instructorId,
+    academicId: req.body.academicId,
+  }).then(
     (classFound) => {
       if (classFound) return next(new AppError('Class exists', StatusCodes.SEE_OTHER));
       return next();

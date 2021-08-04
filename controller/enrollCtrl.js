@@ -13,22 +13,18 @@ exports.updateEnrollment = factory.updateOne(Enroll);
 exports.deleteEnrollment = factory.deleteOne(Enroll);
 
 exports.protect = catchAsync(async (req, res, next) => {
-  const exists = await Class.findById(req.params._id);
-  if (!exists) {
-    return next(new AppError('Class not found', StatusCodes.NOT_FOUND));
-  }
-
   const isEnrolled = await Enroll.findOne(
     { userId: req.body.userId, classId: req.body.classId },
   );
   if (!isEnrolled) {
     return next(new AppError('You are not enrolled', StatusCodes.UNAUTHORIZED));
   }
+  req.user = isEnrolled;
   return next();
 });
 
 exports.restrictTo = (...roles) => (req, res, next) => {
-  if (!roles.includes(req.params.role)) {
+  if (!roles.includes(req.user.role)) {
     return next(
       new AppError(
         'You do not have permission to do this action',

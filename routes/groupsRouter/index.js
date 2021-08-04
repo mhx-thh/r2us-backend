@@ -7,7 +7,7 @@ const reviewRouter = require('./review');
 
 const router = express.Router();
 
-router.use('/', classRouter);
+router.use('/class', classRouter);
 router.use('/enrollment', enrollRouter);
 router.use('/instructors', instructorRouter);
 router.use('/reviews', reviewRouter);

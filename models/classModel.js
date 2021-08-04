@@ -92,6 +92,16 @@ classSchema.pre('save', async function (next) {
   next();
 });
 
+classSchema.post('save', async function () {
+  await instructorModel.findOneAndUpdate({ id: this.instructorId },
+    {
+      $addToSet: {
+        classId: this._id,
+        courseId: this.courseId,
+      },
+    });
+});
+
 classSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'courseId',
@@ -101,7 +111,7 @@ classSchema.pre(/^find/, function (next) {
     select: 'schoolyear semester -_id',
   }).populate({
     path: 'instructorId',
-    select: 'instructorName -_id',
+    select: 'instructorName _id',
   });
   next();
 });
