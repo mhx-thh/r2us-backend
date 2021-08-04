@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', classController.getAllClasses);
 router.get('/:slug', classController.getClassBySlug);
 router.get('/search', classController.searchByDescription, classController.getAllClasses);
-router.get('/new-classes', classController.getNewClasses, classController.getAllClasses);
+router.get('/new-groups', classController.getNewClasses, classController.getAllClasses);
 
 // User can create class
 router.use(authController.protect);
