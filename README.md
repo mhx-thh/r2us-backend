@@ -30,7 +30,7 @@ Một dự án của Mặt trận Tin học hóa - Chiến dịch Tình nguyện
 | Classes     | /groups/class            | Lớp thuộc môn |   ***Đang kiểm tra***|
 | Instructors | /groups/instructors            | Giảng viên    |   **Đã hoàn thành**|
 | Resources   | /groups/resources            | Tài liệu      |   ***Đang kiểm tra***|
-| Reviews     | /groups/reviews            | Cảm nhận      |   Đang xây dựng|
+| Reviews     | /groups/reviews            | Cảm nhận      |  ***Đang kiểm tra*** |
 | Enrollment  | /groups/enrollment           | Tham gia lớp  |   ***Đang kiểm tra***|
 
 # Something silly for developers :>
