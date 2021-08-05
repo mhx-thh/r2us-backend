@@ -94,28 +94,27 @@ classSchema.pre('save', async function (next) {
 });
 
 classSchema.post('save', async function () {
-  await instructorModel.findOneAndUpdate({ id: this.instructorId },
-    {
-      $addToSet: {
-        classId: this._id,
-        courseId: this.courseId,
-      },
-    });
-});
-
-classSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'courseId',
-    select: 'courseName _id',
-  }).populate({
-    path: 'academicId',
-    select: 'schoolyear semester -_id',
-  }).populate({
-    path: 'instructorId',
-    select: 'instructorName _id',
+  const instructor = await instructorModel.findById(this.instructorId);
+  await instructor.updateOne({
+    $addToSet: {
+      courseId: this.courseId,
+      classId: this._id,
+    },
   });
-  next();
 });
+// classSchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: 'courseId',
+//     select: 'courseName _id',
+//   }).populate({
+//     path: 'academicId',
+//     select: 'schoolyear semester -_id',
+//   }).populate({
+//     path: 'instructorId',
+//     select: 'instructorName _id',
+//   });
+//   next();
+// });
 
 classSchema.pre(/findOneAndUpdate|updateOne|update/, async function (next) {
   const docUpdate = this.getUpdate();

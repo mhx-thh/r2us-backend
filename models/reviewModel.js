@@ -54,20 +54,20 @@ reviewSchema.pre('save', async function (next) {
   this.description = slugify(convVie(this.reviewTitle), { lower: true });
   next();
 });
-reviewSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'userId',
-    select: '_id studentCardNumber photo',
-  }).populate({
-    path: 'classId',
-    select: '_id className academicId',
-  }).populate({
-    path: 'instructorId',
-    select: '_id instructorName',
-  });
-
-  next();
-});
+// reviewSchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: 'userId',
+//     select: '_id studentCardNumber photo',
+//   }).populate({
+//     path: 'classId',
+//     select: '_id className academicId',
+//   }).populate({
+//     path: 'instructorId',
+//     select: '_id instructorName',
+//   });
+//
+//   next();
+// });
 
 const Review = mongoose.model('Review', reviewSchema);
 module.exports = Review;

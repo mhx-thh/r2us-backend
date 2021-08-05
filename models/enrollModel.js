@@ -31,16 +31,16 @@ classRoleSchema.plugin(uniqueValidator, {
   message: 'Error, {VALUE} is already taken',
 });
 
-classRoleSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'userId',
-    select: '_id studentCardNumber givenName familyName email dateOfBirth photo',
-  }).populate({
-    path: 'classId',
-    select: '_id className courseId instructorId academicId',
-  });
-  next();
-});
+// classRoleSchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: 'userId',
+//     select: '_id studentCardNumber givenName familyName email dateOfBirth photo',
+//   }).populate({
+//     path: 'classId',
+//     select: '_id className courseId instructorId academicId',
+//   });
+//   next();
+// });
 
 classRoleSchema.methods.acceptEnrollment = async function () {
   const classEnroll = await this.model('Class').findById(this.classId);
