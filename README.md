@@ -27,11 +27,11 @@ Một dự án của Mặt trận Tin học hóa - Chiến dịch Tình nguyện
 | Academic    | /academic   | Năm học       |   **Đã hoàn thành**|   
 | Faculty     | /academic/faculties   | Khoa          |   **Đã hoàn thành**|
 | Courses     | /academic/courses            | Môn trong khoa|   **Đã hoàn thành**|
-| Classes     | /classes            | Lớp thuộc môn |   ***Đang kiểm tra***|
-| Instructors | /classes/instructors            | Giảng viên    |   **Đã hoàn thành**|
-| Resources   | /classes/resources            | Tài liệu      |   ***Đang kiểm tra***|
-| Reviews     | /classes/reviews            | Cảm nhận      |   Đang xây dựng|
-| Enrollment  | /classes/enrollment           | Tham gia lớp  |   ***Đang kiểm tra***|
+| Classes     | /groups/class            | Lớp thuộc môn |   ***Đang kiểm tra***|
+| Instructors | /groups/instructors            | Giảng viên    |   **Đã hoàn thành**|
+| Resources   | /groups/resources            | Tài liệu      |   ***Đang kiểm tra***|
+| Reviews     | /groups/reviews            | Cảm nhận      |   Đang xây dựng|
+| Enrollment  | /groups/enrollment           | Tham gia lớp  |   ***Đang kiểm tra***|
 
 # Something silly for developers :>
 - [x] Improvement: Trải nghiệm người dùng (Đăng nhập OAuth2 qua Google).
