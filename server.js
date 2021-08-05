@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // connect environment variable config.env file
-require('dotenv').config({ path: './sample.env' });
+require('dotenv').config({ path: './.env' });
 
 // exit with code 1 -> shutdown |
 // if it's default is exit with code 0 and have 2 paramater error and origin
