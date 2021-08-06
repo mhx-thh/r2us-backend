@@ -13,7 +13,7 @@ exports.updateEnrollment = factory.updateOne(Enroll);
 exports.deleteEnrollment = factory.deleteOne(Enroll);
 
 exports.getMe = (req, res, next) => {
-  req.query.userId = req.user.id;
+  if (!req.query.userId) req.query.userId = req.user.id;
   next();
 };
 
@@ -40,16 +40,6 @@ exports.restrictTo = (...roles) => (req, res, next) => {
   }
   return next();
 };
-
-exports.acceptEnrollment = catchAsync(async (req, res, next) => {
-  const enrollment = await Enroll.findById(req.params.id);
-  await enrollment.acceptEnrollment();
-  sendResponse({
-    message: 'Now, you can access this class',
-  },
-  StatusCodes.OK,
-  res);
-});
 
 exports.advanceToProvider = catchAsync(async (req, res, next) => {
   const enrollment = await Enroll.findById(req.params.id);

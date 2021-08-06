@@ -34,6 +34,16 @@ exports.acceptResource = async function (req, res, next) {
   return sendResponse(resourceIn, StatusCodes.OK, res);
 };
 
+exports.restrictUpdateResourceFields = (req, res, next) => {
+  const allowed = ['resourceName', 'resourceDescription'];
+  Object.keys(req.body).forEach((element) => {
+    if (!allowed.includes(element)) {
+      delete req.body[element];
+    }
+  });
+  next();
+};
+
 exports.checkResourceOwner = catchAsync(async (req, res, next) => {
   const resource = await Resource.findById(req.params.id);
   if (!resource) return next(new AppError('Resource not found', StatusCodes.NOT_FOUND));

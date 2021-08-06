@@ -11,8 +11,8 @@ exports.updateClass = factory.updateOne(Class);
 exports.deleteClass = factory.deleteOne(Class);
 
 exports.getNewClasses = (req, res, next) => {
-  req.query.__limit = 5;
-  req.query.__sort = '-createdAt';
+  req.query.__limit = 4;
+  req.query.__sort = '-createdAt, -updatedAt';
   next();
 };
 
@@ -23,4 +23,14 @@ exports.searchByDescription = async function (req, res, next) {
   if (!document) return next(new AppError('No document found', StatusCodes.NOT_FOUND));
 
   return sendResponse(document, StatusCodes.OK, res);
+};
+
+exports.restrictUpdateClassFields = (req, res, next) => {
+  const allowed = ['className', 'description'];
+  Object.keys(req.body).forEach((element) => {
+    if (!allowed.includes(element)) {
+      delete req.body[element];
+    }
+  });
+  next();
 };

@@ -5,24 +5,17 @@ const enrollController = require('../../controller/enrollCtrl');
 
 const router = express.Router();
 
-// Middleware: Please login in order to access this function
-router.use(authController.protect);
-
 // Get based on class
 router.get('/:slug', enrollController.getSlug, enrollController.getAllEnrollment);
+
+// Middleware: Please login in order to access this function
+router.use(authController.protect);
 
 // Get my enrollment
 router.get('/me', enrollController.getMe, enrollController.getAllEnrollment);
 
 // Create an enrollment
 router.post('/create', enrollController.createEnrollment);
-
-// Accept an enrollment
-router.patch('/:id/accept',
-  enrollController.protect,
-  enrollController.restrictTo('provider'),
-  enrollController.checkPermission,
-  enrollController.acceptEnrollment);
 
 // Unenrolled a class
 router.delete('/deleteMe', enrollController.deleteEnrollment);

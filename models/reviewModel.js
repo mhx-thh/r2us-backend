@@ -34,12 +34,6 @@ const reviewSchema = new mongoose.Schema({
     ref: 'Class',
     required: [true, 'A review must belong to a class'],
   },
-
-  instructorId: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'Instructor',
-    required: [true, 'A review must belong to a instructor'],
-  },
 }, {
   timestamps: true,
   toObject: { virtuals: true },
@@ -64,9 +58,6 @@ reviewSchema.pre(/^find/, function (next) {
   }).populate({
     path: 'classId',
     select: '_id className academicId',
-  }).populate({
-    path: 'instructorId',
-    select: '_id instructorName',
   });
   next();
 });
