@@ -15,7 +15,7 @@ router.use(authController.protect);
 router.use(enrollController.protect);
 router.use(enrollController.restrictTo('member', 'provider'));
 router.route('/create').post(resourceController.createResource);
-router.route('/update/:id').patch(resourceController.updateResource);
+router.route('/update/:id').patch(resourceController.checkResourceOwner, resourceController.updateResource);
 router.route('/delete/:id').delete(resourceController.deleteResource);
 
 // Provider

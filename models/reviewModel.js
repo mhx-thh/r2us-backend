@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const slugify = require('slugify');
 const uniqueValidator = require('mongoose-unique-validator');
 const idValidator = require('mongoose-id-validator');
+// const { StatusCodes } = require('http-status-codes');
+// const AppError = require('../utils/appError');
 const convVie = require('../utils/convVie');
+// const classModel = require('./classModel');
 
 const reviewSchema = new mongoose.Schema({
   reviewTitle: {
@@ -54,20 +57,19 @@ reviewSchema.pre('save', async function (next) {
   this.description = slugify(convVie(this.reviewTitle), { lower: true });
   next();
 });
-// reviewSchema.pre(/^find/, function (next) {
-//   this.populate({
-//     path: 'userId',
-//     select: '_id studentCardNumber photo',
-//   }).populate({
-//     path: 'classId',
-//     select: '_id className academicId',
-//   }).populate({
-//     path: 'instructorId',
-//     select: '_id instructorName',
-//   });
-//
-//   next();
-// });
+reviewSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'userId',
+    select: '_id givenName familyName photo',
+  }).populate({
+    path: 'classId',
+    select: '_id className academicId',
+  }).populate({
+    path: 'instructorId',
+    select: '_id instructorName',
+  });
+  next();
+});
 
 const Review = mongoose.model('Review', reviewSchema);
 module.exports = Review;

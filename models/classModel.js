@@ -102,19 +102,19 @@ classSchema.post('save', async function () {
     },
   });
 });
-// classSchema.pre(/^find/, function (next) {
-//   this.populate({
-//     path: 'courseId',
-//     select: 'courseName _id',
-//   }).populate({
-//     path: 'academicId',
-//     select: 'schoolyear semester -_id',
-//   }).populate({
-//     path: 'instructorId',
-//     select: 'instructorName _id',
-//   });
-//   next();
-// });
+classSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'courseId',
+    select: 'courseName _id',
+  }).populate({
+    path: 'academicId',
+    select: 'schoolyear semester -_id',
+  }).populate({
+    path: 'instructorId',
+    select: 'instructorName _id',
+  });
+  next();
+});
 
 classSchema.pre(/findOneAndUpdate|updateOne|update/, async function (next) {
   const docUpdate = this.getUpdate();

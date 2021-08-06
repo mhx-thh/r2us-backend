@@ -2,6 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 const AppError = require('../utils/appError');
 const Resource = require('../models/resourceModel');
 const sendResponse = require('../utils/sendResponse');
+const catchAsync = require('../utils/catchAsync');
 const factory = require('../utils/handlerFactory');
 
 exports.getAllResources = factory.getAll(Resource);
@@ -11,7 +12,7 @@ exports.updateResource = factory.updateOne(Resource);
 exports.deleteResource = factory.deleteOne(Resource);
 
 exports.getNewResources = (req, res, next) => {
-  req.query.__limit = 5;
+  req.query.__limit = 4;
   req.query.__sort = '-createdAt,-updatedAt';
   next();
 };
@@ -32,3 +33,15 @@ exports.acceptResource = async function (req, res, next) {
   });
   return sendResponse(resourceIn, StatusCodes.OK, res);
 };
+
+exports.checkResourceOwner = catchAsync(async (req, res, next) => {
+  const resource = await Resource.findById(req.params.id);
+  if (!resource) return next(new AppError('Resource not found', StatusCodes.NOT_FOUND));
+  if (req.user.id !== resource.userId) {
+    return next(
+      new AppError('You do not have permission to perform this action',
+        StatusCodes.FORBIDDEN),
+    );
+  }
+  return next();
+});
