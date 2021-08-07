@@ -5,11 +5,12 @@ const enrollController = require('../../controller/enrollCtrl');
 
 const router = express.Router();
 
+router.route('/new-classes').get(classController.getNewClasses, classController.getAllClasses);
+router.get('/search', classController.searchByDescription, classController.getAllClasses);
 router.get('/', classController.getAllClasses);
 router.get('/:slug', classController.getClassBySlug);
-router.get('/search', classController.searchByDescription, classController.getAllClasses);
-router.get('/new-groups', classController.getNewClasses, classController.getAllClasses);
 
+// router.get('/search', classController.getNewClasses, classController.getAllClasses);
 // User can create class
 router.use(authController.protect);
 router.use(authController.restrictTo('user'));

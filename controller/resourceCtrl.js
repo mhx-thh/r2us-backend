@@ -12,7 +12,7 @@ exports.updateResource = factory.updateOne(Resource);
 exports.deleteResource = factory.deleteOne(Resource);
 
 exports.getNewResources = (req, res, next) => {
-  req.query.__limit = 4;
+  req.query.__limit = '4';
   req.query.__sort = '-createdAt,-updatedAt';
   next();
 };

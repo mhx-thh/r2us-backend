@@ -6,8 +6,8 @@ const catchAsync = require('../utils/catchAsync');
 const sendResponse = require('../utils/sendResponse');
 
 exports.getNewReviews = (req, res, next) => {
-  req.query.limit = 4;
-  req.query.sort = '-createdAt, -updateAt';
+  req.query.__limit = '4';
+  req.query.__sort = '-createdAt, -updateAt';
   next();
 };
 

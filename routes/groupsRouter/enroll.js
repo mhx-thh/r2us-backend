@@ -6,19 +6,32 @@ const enrollController = require('../../controller/enrollCtrl');
 const router = express.Router();
 
 // Get based on class
-router.get('/:slug', enrollController.getSlug, enrollController.getAllEnrollment);
 
 // Middleware: Please login in order to access this function
-router.use(authController.protect);
+// router.use();
 
 // Get my enrollment
-router.get('/me', enrollController.getMe, enrollController.getAllEnrollment);
+router.route('/me')
+  .get(
+    authController.protect,
+    enrollController.getMe,
+    enrollController.getAllEnrollment,
+  );
+
+// Auto enroll to provider
+router.route('/provider')
+  .post(
+    authController.protect,
+    enrollController.setUserId,
+    enrollController.setProvider,
+    enrollController.createEnrollment,
+  );
 
 // Create an enrollment
-router.post('/create', enrollController.createEnrollment);
-
-// Unenrolled a class
-router.delete('/deleteMe', enrollController.deleteEnrollment);
+router.route('/create')
+  .post(authController.protect,
+    enrollController.setUserId,
+    enrollController.createEnrollment);
 
 // Most secure route (only for admin)
 router.use(authController.restrictTo('admin'));
