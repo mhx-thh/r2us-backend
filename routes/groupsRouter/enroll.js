@@ -18,11 +18,21 @@ router.route('/me')
     enrollController.getAllEnrollment,
   );
 
-// Auto enroll to provider
-router.route('/provider')
+// Auto-enroll to member
+router.route('/member/:slug')
   .post(
     authController.protect,
     enrollController.setUserId,
+    enrollController.setIdBySlug,
+    enrollController.createEnrollment,
+  );
+
+// Auto enroll to provider
+router.route('/provider/:slug')
+  .post(
+    authController.protect,
+    enrollController.setUserId,
+    enrollController.setIdBySlug,
     enrollController.setProvider,
     enrollController.createEnrollment,
   );

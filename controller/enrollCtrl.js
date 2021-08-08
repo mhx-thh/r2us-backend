@@ -79,3 +79,10 @@ exports.getSlug = catchAsync(async (req, res, next) => {
   if (!slug) return next(new AppError('Class not found', StatusCodes.NOT_FOUND));
   return next();
 });
+
+exports.setIdBySlug = catchAsync(async (req, res, next) => {
+  const slug = await Class.findOne({ slug: req.params.slug }, { select: 'id' });
+  if (!slug) return next(new AppError('Class not found', StatusCodes.NOT_FOUND));
+  req.body.classId = slug;
+  return next();
+});

@@ -5,7 +5,7 @@ const enrollController = require('../../controller/enrollCtrl');
 
 const router = express.Router();
 
-router.route('/new-classes').get(classController.getNewClasses, classController.getAllClasses);
+router.route('/new-groups').get(classController.getNewClasses, classController.getAllClasses);
 router.get('/search', classController.searchByDescription, classController.getAllClasses);
 router.get('/', classController.getAllClasses);
 router.get('/:slug', classController.getClassBySlug);
@@ -21,6 +21,7 @@ router.route('/update/:id')
   .patch(
     enrollController.protect,
     enrollController.restrictTo('provider'),
+    classController.restrictUpdateClassFields,
     classController.updateClass,
   );
 

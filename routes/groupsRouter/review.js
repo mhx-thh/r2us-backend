@@ -5,13 +5,17 @@ const authController = require('../../controller/authCtrl');
 
 const router = express.Router();
 
-router.get('/', reviewController.getAllReviews);
 router.get('/search',
   reviewController.searchByDescription,
   reviewController.getAllReviews);
 
-// router.use(authController.protect);
-router.get('/me', reviewController.myReview, reviewController.getAllReviews);
+router.get('/me',
+  authController.protect,
+  reviewController.myReview,
+  reviewController.getAllReviews);
+router.get('/', reviewController.getAllReviews);
+
+// router.use();
 
 router.use(enrollController.protect);
 router.use(enrollController.restrictTo('member', 'provider'));
