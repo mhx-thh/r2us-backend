@@ -59,6 +59,17 @@ const resourceSchema = new mongoose.Schema({
 
 resourceSchema.index({ resourceDescription: 'text' });
 
+resourceSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'userId',
+    select: '_id givenName familyName photo',
+  }).populate({
+    path: 'classId',
+    select: '_id className academicId',
+  });
+  next();
+});
+
 resourceSchema.plugin(uniqueValidator, {
   message: 'Error, {VALUE} is already taken',
 });
