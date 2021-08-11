@@ -11,7 +11,7 @@ const reviewSchema = new mongoose.Schema({
 
   reviewType: {
     type: String,
-    enum: ['Class', 'Course'],
+    enum: ['Class', 'Course', 'Instructor'],
     default: 'Class',
   },
 
@@ -45,6 +45,11 @@ const reviewSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Course',
   },
+
+  instructorId: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Instructor',
+  }
 }, {
   timestamps: true,
   toObject: { virtuals: true },
@@ -72,6 +77,9 @@ reviewSchema.pre(/^find/, function (next) {
   }).populate({
     path: 'courseId',
     select: '_id courseName facultyId',
+  }).populate({
+    path: 'instructorId',
+    select: '_id instructorName',
   });
   next();
 });
