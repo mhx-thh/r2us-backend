@@ -20,7 +20,6 @@ router.use(authController.protect);
 router.route('/create')
   .post(
     resourceController.createResource,
-    enrollController.createEnrollment,
   );
 router.use(enrollController.protect);
 router.use(enrollController.restrictTo('member', 'provider'));
