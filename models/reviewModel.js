@@ -8,6 +8,13 @@ const convVie = require('../utils/convVie');
 // const classModel = require('./classModel');
 
 const reviewSchema = new mongoose.Schema({
+
+  reviewType: {
+    type: String,
+    enum: ['Class', 'Course'],
+    default: 'Class',
+  },
+
   reviewTitle: {
     type: String,
     required: [true, 'A review must have a title'],
@@ -32,7 +39,11 @@ const reviewSchema = new mongoose.Schema({
   classId: {
     type: mongoose.Schema.ObjectId,
     ref: 'Class',
-    required: [true, 'A review must belong to a class'],
+  },
+
+  courseId: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Course',
   },
 }, {
   timestamps: true,
@@ -58,6 +69,9 @@ reviewSchema.pre(/^find/, function (next) {
   }).populate({
     path: 'classId',
     select: '_id className academicId',
+  }).populate({
+    path: 'courseId',
+    select: '_id courseName facultyId',
   });
   next();
 });
