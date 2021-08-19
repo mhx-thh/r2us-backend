@@ -25,13 +25,15 @@ const classSchema = new mongoose.Schema({
     select: false,
   },
 
-  slug: String,
+  slug: {
+    type: String,
+    unique: [true, 'A class should have a slug unique'],
+  },
 
   courseId: {
     type: mongoose.Schema.ObjectId,
     ref: 'Course',
     required: [true, 'A class must belong to a course'],
-    default: '',
   },
 
   instructorId: {
@@ -44,23 +46,28 @@ const classSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Academic',
     required: [true, 'A class must belong to a school-year'],
-    default: '',
   },
 
   nStudents: {
     type: Number,
     default: 0,
   },
+  createBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+  },
 }, {
   timestamps: true,
   toObject: { virtuals: true },
 });
 
-classSchema.index = ({ description: 'text' });
-classSchema.index = ({ __id: 1, courseId: 1 }, { unique: true });
-classSchema.index = ({ __id: 1, instructorId: 1 });
-classSchema.index = ({ __id: 1, academicId: 1 });
-classSchema.index = ({ slug: 1 });
+classSchema.index({
+  courseId: 1,
+  instructorId: 1,
+  academicId: 1,
+}, { unique: true });
+classSchema.index({ slug: 1 });
+classSchema.index({ description: 'text' });
 
 classSchema.plugin(uniqueValidator, {
   message: 'Error, {VALUE} is already taken',
@@ -69,33 +76,42 @@ classSchema.plugin(uniqueValidator, {
 classSchema.plugin(idValidator);
 
 classSchema.pre('save', async function (next) {
-  const course = await courseModel.findById(this.courseId).then(
-    (courseFound) => {
-      if (!courseFound) return next(new AppError('Course not found', StatusCodes.NOT_FOUND));
-      return courseFound.toJSON();
-    },
-  );
-  this.description = convVie(course.courseName).toLowerCase();
+  // check intructor is master of course
+  const instructor = await instructorModel.findById(this.instructorId);
+  if (!instructor.courseId.includes(this.courseId)) {
+    return next(new AppError('Intructor is not master of course', StatusCodes.BAD_REQUEST));
+  }
+  // make it bester
+  this.description = convVie(this.className).toLowerCase();
   this.slug = slugify(convVie(this.className), { lower: true });
-  next();
+  this.nStudents = 1;
+  return next();
 });
 
 classSchema.post('save', async function () {
+  // add class to intructor
   const instructor = await instructorModel.findById(this.instructorId);
   await instructor.updateOne({
     $addToSet: {
-      courseId: this.courseId,
+      // courseId: this.courseId,
       classId: this._id,
     },
   });
+  // set user is provider of class
+  await enrollModel.create({
+    userId: this.createBy._id,
+    classId: this._id,
+    role: 'provider',
+  });
 });
+
 classSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'courseId',
     select: 'courseName _id',
   }).populate({
     path: 'academicId',
-    select: 'schoolyear semester -_id',
+    select: 'schoolyear semester',
   }).populate({
     path: 'instructorId',
     select: 'instructorName _id',

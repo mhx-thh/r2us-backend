@@ -4,7 +4,7 @@ const factory = require('../utils/handlerFactory');
 // const AppError = require('../utils/appError');
 
 exports.getAllCourses = factory.getAll(Course);
-exports.getCourseBySlug = factory.getOne(Course, { query: 'slug' });
+// exports.getCourseBySlug = factory.getOne(Course, { query: 'slug' });
 exports.getCourse = factory.getOne(Course);
 exports.createCourse = factory.createOne(Course);
 exports.updateCourse = factory.updateOne(Course);

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const slugify = require('slugify');
+// const slugify = require('slugify');
 const uniqueValidator = require('mongoose-unique-validator');
 const idValidator = require('mongoose-id-validator');
 const convVie = require('../utils/convVie');
@@ -11,14 +11,10 @@ const courseSchema = new mongoose.Schema({
   courseName: {
     type: String,
     required: [true, 'A course should have a name'],
-    unique: true,
     trim: true,
     minlength: 10,
     maxlength: 60,
-    default: '',
   },
-
-  slug: String,
 
   facultyId: {
     type: mongoose.Schema.ObjectId,
@@ -34,13 +30,12 @@ const courseSchema = new mongoose.Schema({
   toObject: { virtuals: true },
 });
 
-courseSchema.index = ({ description: 'text' });
-courseSchema.index = ({ courseId: 1, facultyId: 1 });
-courseSchema.index = ({ slug: 1 });
+courseSchema.index({ courseDescription: 'text' });
+// courseSchema.index = ({ slug: 1 });
 
 courseSchema.pre('save', function (next) {
   this.courseDescription = convVie(this.courseName);
-  this.slug = slugify(this.courseDescription, { lower: true });
+  // this.slug = slugify(this.courseDescription, { lower: true });
   next();
 });
 

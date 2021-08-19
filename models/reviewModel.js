@@ -6,9 +6,9 @@ const idValidator = require('mongoose-id-validator');
 // const AppError = require('../utils/appError');
 const convVie = require('../utils/convVie');
 // const classModel = require('./classModel');
+const enrollModel = require('./enrollModel');
 
 const reviewSchema = new mongoose.Schema({
-
   reviewType: {
     type: String,
     enum: ['Class', 'Course', 'Instructor'],
@@ -21,13 +21,17 @@ const reviewSchema = new mongoose.Schema({
     default: 'Review',
   },
 
-  description: String,
+  textSearch: {
+    type: String,
+    select: false,
+  },
+
+  slug: String,
 
   review: {
     type: String,
     unique: true,
     required: [true, 'A review cannot be empty'],
-    default: '',
   },
 
   userId: {
@@ -41,32 +45,40 @@ const reviewSchema = new mongoose.Schema({
     ref: 'Class',
   },
 
-  courseId: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'Course',
-  },
-
-  instructorId: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'Instructor',
-  }
 }, {
   timestamps: true,
   toObject: { virtuals: true },
 });
 
 // One review will be from a user
-reviewSchema.index({ _id: 1, userId: 1 });
-reviewSchema.index({ description: 'text' });
+reviewSchema.index({ textSearch: 'text' });
 reviewSchema.plugin(uniqueValidator, {
   message: 'Error, {VALUE} is already taken',
 });
 
 reviewSchema.plugin(idValidator);
 reviewSchema.pre('save', async function (next) {
-  this.description = slugify(convVie(this.reviewTitle), { lower: true });
+  this.textSearch = convVie(this.reviewTitle).toLowerCase();
+  this.slug = slugify(convVie(this.reviewTitle), { lower: true });
   next();
 });
+
+reviewSchema.post('save', async function () {
+  // set user is member of class
+  const userId = this.userId._id;
+  const classId = this.classId._id;
+  // Find the document
+  const isJoined = await enrollModel.findOne({ userId, classId });
+  // if not, create role
+  if (!isJoined) {
+    await enrollModel.create({
+      userId: this.userId._id,
+      classId: this.classId._id,
+      role: 'member',
+    });
+  }
+});
+
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'userId',

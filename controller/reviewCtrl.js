@@ -11,19 +11,14 @@ exports.getNewReviews = (req, res, next) => {
   next();
 };
 
-exports.setClassUserIds = (req, res, next) => {
-  if (!req.body.classId) req.body.classId = req.params.id;
-  if (!req.body.userId) req.body.userId = req.user.id;
-  next();
-};
-
 exports.myReview = (req, res, next) => {
-  req.query.user = req.user.id;
+  req.query.userId = req.user.id;
   next();
 };
 
 exports.getAllReviews = factory.getAll(Review);
 exports.getReview = factory.getOne(Review);
+exports.getReviewBySlug = factory.getOne(Review, { query: 'slug' });
 exports.createReview = factory.createOne(Review);
 exports.updateReview = factory.updateOne(Review);
 exports.deleteReview = factory.deleteOne(Review);
@@ -58,3 +53,8 @@ exports.checkReviewOwner = catchAsync(async (req, res, next) => {
   }
   return next();
 });
+
+exports.setUserCreateReview = (request, response, next) => {
+  request.body.userId = request.user.id;
+  return next();
+};

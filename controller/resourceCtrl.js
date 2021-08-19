@@ -55,3 +55,8 @@ exports.checkResourceOwner = catchAsync(async (req, res, next) => {
   }
   return next();
 });
+
+exports.setUserCreateResource = (request, response, next) => {
+  request.body.userId = request.user.id;
+  return next();
+};

@@ -25,6 +25,11 @@ exports.searchByDescription = async function (req, res, next) {
   return sendResponse(document, StatusCodes.OK, res);
 };
 
+exports.setUserCreateClass = (request, response, next) => {
+  request.body.createBy = request.user.id;
+  return next();
+};
+
 exports.restrictUpdateClassFields = (req, res, next) => {
   const allowed = ['className', 'description'];
   Object.keys(req.body).forEach((element) => {

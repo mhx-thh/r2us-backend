@@ -5,6 +5,7 @@ const idValidator = require('mongoose-id-validator');
 // const { StatusCodes } = require('http-status-codes');
 const convVie = require('../utils/convVie');
 // const AppError = require('../utils/appError');
+const enrollModel = require('./enrollModel');
 
 const resourceSchema = new mongoose.Schema({
   resourceType: {
@@ -29,6 +30,10 @@ const resourceSchema = new mongoose.Schema({
   resourceDescription: {
     type: String,
     default: '',
+  },
+
+  textSearch: {
+    type: String,
     select: false,
   },
 
@@ -51,13 +56,17 @@ const resourceSchema = new mongoose.Schema({
     enum: ['pending', 'accepted'],
     default: 'pending',
   },
+  isShare: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
 });
 
-resourceSchema.index({ resourceDescription: 'text' });
+resourceSchema.index({ textSearch: 'text' });
 
 resourceSchema.pre(/^find/, function (next) {
   this.populate({
@@ -76,15 +85,31 @@ resourceSchema.plugin(uniqueValidator, {
 
 resourceSchema.plugin(idValidator);
 resourceSchema.pre('save', async function (next) {
-  this.resourceDescription = convVie(this.resourceName).toLowerCase();
-  this.slug = slugify(this.resourceDescription, { lower: true });
+  this.textSearch = convVie(this.resourceName).toLowerCase();
+  this.slug = slugify(this.textSearch, { lower: true });
   next();
+});
+
+resourceSchema.post('save', async function () {
+  // set user is member of class
+  const userId = this.userId._id;
+  const classId = this.classId._id;
+  // Find the document
+  const isJoined = await enrollModel.findOne({ userId, classId });
+  // if not, create role
+  if (!isJoined) {
+    await enrollModel.create({
+      userId: this.userId._id,
+      classId: this.classId._id,
+      role: 'member',
+    });
+  }
 });
 
 resourceSchema.pre(/findOneAndUpdate|updateOne|update/, function (next) {
   const docUpdate = this.getUpdate();
   if (!docUpdate || !docUpdate.resourceName) return next();
-  this.findOneAndUpdate({}, { resourceDescription: convVie(docUpdate.resourceName).toLowerCase() });
+  this.findOneAndUpdate({}, { textSearch: convVie(docUpdate.resourceName).toLowerCase() });
   return next();
 });
 

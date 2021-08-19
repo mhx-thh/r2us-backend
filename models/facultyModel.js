@@ -7,8 +7,8 @@ const facultySchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide the name'],
     default: '',
+    unique: true,
   },
-
   facultyDescription: String,
 });
 

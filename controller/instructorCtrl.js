@@ -2,7 +2,7 @@
 // const { StatusCodes } = require('http-status-codes');
 const Instructor = require('../models/instructorModel');
 const factory = require('../utils/handlerFactory');
-const catchAsync = require('../utils/catchAsync');
+// const catchAsync = require('../utils/catchAsync');
 // const sendResponse = require('../utils/sendResponse');
 // const Class = require('../models/classModel');
 // const AppError = require('../utils/appError');
@@ -13,8 +13,19 @@ exports.createInstructor = factory.createOne(Instructor);
 exports.updateInstructor = factory.updateOne(Instructor);
 exports.deleteInstructor = factory.deleteOne(Instructor);
 
-exports.updateClass = catchAsync(async (req, res, next) => {
-  const instructor = await Instructor.findById(req.body.instructorId);
-  await instructor.updateClassAndCourse();
+exports.restricCreateFields = (request, res, next) => {
+  const allowedFields = ['instructorName', 'courseId'];
+
+  Object.keys(request.body).forEach((element) => {
+    if (!allowedFields.includes(element)) {
+      delete request.body[element];
+    }
+  });
   return next();
-});
+};
+
+// exports.updateClass = catchAsync(async (req, res, next) => {
+//   const instructor = await Instructor.findById(req.body.instructorId);
+//   await instructor.updateClassAndCourse();
+//   return next();
+// });

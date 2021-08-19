@@ -5,25 +5,22 @@ const authController = require('../../controller/authCtrl');
 
 const router = express.Router();
 
-router.get('/search',
-  reviewController.searchByDescription,
-  reviewController.getAllReviews);
-
+router.get('/', reviewController.getAllReviews);
+router.get('/new-reviews', reviewController.getNewReviews, reviewController.getAllReviews);
 router.get('/me',
   authController.protect,
-  reviewController.myReview,
+  enrollController.getMe,
   reviewController.getAllReviews);
-router.get('/', reviewController.getAllReviews);
+router.get('/:slug', reviewController.getReviewBySlug);
 
-// router.use();
-
-router.use(enrollController.protect);
-router.use(enrollController.restrictTo('member', 'provider'));
+router.use(authController.protect);
 router.route('/create')
   .post(
-    reviewController.setClassUserIds,
+    reviewController.setUserCreateReview,
     reviewController.createReview,
   );
+
+router.use(enrollController.restrictTo('member', 'provider'));
 router.route('/update/:id')
   .patch(
     reviewController.checkReviewOwner,
@@ -36,10 +33,10 @@ router.route('/delete/:id')
     reviewController.deleteReview,
   );
 
-router.use(authController.restrictTo('admin'));
-router.route('/:id').get(reviewController.getReview);
-router.route('/admin/create').post(reviewController.createReview);
-router.route('/admin/update/:id').patch(reviewController.updateReview);
-router.route('/admin/delete/:id').delete(reviewController.deleteReview);
+// router.use(authController.restrictTo('admin'));
+// router.route('/:id').get(reviewController.getReview);
+// router.route('/admin/create').post(reviewController.createReview);
+// router.route('/admin/update/:id').patch(reviewController.updateReview);
+// router.route('/admin/delete/:id').delete(reviewController.deleteReview);
 
 module.exports = router;

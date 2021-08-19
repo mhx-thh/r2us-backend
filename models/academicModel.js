@@ -5,7 +5,6 @@ const classModel = require('./classModel');
 const academicSchema = new mongoose.Schema({
   schoolyear: {
     type: String,
-    default: '',
     required: [true, 'Please provide the school-year'],
   },
 

@@ -27,6 +27,8 @@ const classRoleSchema = new mongoose.Schema({
   toObject: { virtuals: true },
 });
 
+classRoleSchema.index({ userId: 1, classId: 1 }, { unique: true });
+
 classRoleSchema.plugin(uniqueValidator, {
   message: 'Error, {VALUE} is already taken',
 });
