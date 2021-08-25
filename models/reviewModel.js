@@ -1,11 +1,7 @@
 const mongoose = require('mongoose');
-const slugify = require('slugify');
 const uniqueValidator = require('mongoose-unique-validator');
 const idValidator = require('mongoose-id-validator');
-// const { StatusCodes } = require('http-status-codes');
-// const AppError = require('../utils/appError');
 const convVie = require('../utils/convVie');
-// const classModel = require('./classModel');
 const enrollModel = require('./enrollModel');
 
 const reviewSchema = new mongoose.Schema({
@@ -20,18 +16,18 @@ const reviewSchema = new mongoose.Schema({
     required: [true, 'A review must have a title'],
     default: 'Review',
   },
-
-  textSearch: {
+  reviewTitleTextSearch: {
     type: String,
     select: false,
   },
 
-  slug: String,
-
   review: {
     type: String,
-    unique: true,
     required: [true, 'A review cannot be empty'],
+  },
+  reviewTextSearch: {
+    type: String,
+    select: false,
   },
 
   userId: {
@@ -51,15 +47,15 @@ const reviewSchema = new mongoose.Schema({
 });
 
 // One review will be from a user
-reviewSchema.index({ textSearch: 'text' });
+reviewSchema.index({ reviewTitleTextSearch: 'text', reviewTextSearch: 'text' });
 reviewSchema.plugin(uniqueValidator, {
   message: 'Error, {VALUE} is already taken',
 });
 
 reviewSchema.plugin(idValidator);
 reviewSchema.pre('save', async function (next) {
-  this.textSearch = convVie(this.reviewTitle).toLowerCase();
-  this.slug = slugify(convVie(this.reviewTitle), { lower: true });
+  this.reviewTitleTextSearch = convVie(this.reviewTitle).toLowerCase();
+  this.reviewTextSearch = convVie(this.review).toLowerCase();
   next();
 });
 
@@ -94,6 +90,22 @@ reviewSchema.pre(/^find/, function (next) {
     select: '_id instructorName',
   });
   next();
+});
+
+reviewSchema.pre(/findOneAndUpdate|updateOne|update/, function (next) {
+  const docUpdate = this.getUpdate();
+  // return if not update search
+  if (!docUpdate) return next();
+  const updateDocs = {};
+  if (docUpdate.reviewTitle) {
+    updateDocs.reviewTitleTextSearch = convVie(docUpdate.reviewTitle).toLowerCase();
+  }
+  if (docUpdate.review) {
+    updateDocs.reviewTextSearch = convVie(docUpdate.review).toLowerCase();
+  }
+  // update
+  this.findOneAndUpdate({}, updateDocs);
+  return next();
 });
 
 const Review = mongoose.model('Review', reviewSchema);

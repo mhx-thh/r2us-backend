@@ -29,7 +29,7 @@ exports.setProvider = (request, response, next) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   const isEnrolled = await Enroll.findOne(
-    { userId: req.body.userId, classId: req.body.classId },
+    { userId: req.user.id, classId: req.class.id },
   );
   if (!isEnrolled) {
     return next(new AppError('You are not enrolled', StatusCodes.UNAUTHORIZED));

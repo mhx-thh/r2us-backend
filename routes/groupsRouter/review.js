@@ -1,44 +1,39 @@
 const express = require('express');
-const reviewController = require('../../controller/reviewCtrl');
+const reviewCtrl = require('../../controller/reviewCtrl');
 const classCtrl = require('../../controller/classCtrl');
 const enrollController = require('../../controller/enrollCtrl');
 const authController = require('../../controller/authCtrl');
 
 const router = express.Router();
 
-router.get('/', classCtrl.convertQueryToClassId, reviewController.getAllReviews);
-router.get('/new-reviews', reviewController.getNewReviews, reviewController.getAllReviews);
+router.get('/', classCtrl.convertQueryToClassId, reviewCtrl.getAllReviews);
+router.get('/new-reviews', reviewCtrl.getNewReviews, reviewCtrl.getAllReviews);
 router.get('/me',
   authController.protect,
   enrollController.getMe,
   classCtrl.convertQueryToClassId,
-  reviewController.getAllReviews);
-router.get('/:slug', reviewController.getReviewBySlug);
+  reviewCtrl.getAllReviews);
+router.get('/:id', reviewCtrl.getReview);
 
 router.use(authController.protect);
-router.route('/create')
-  .post(
-    reviewController.setUserCreateReview,
-    reviewController.createReview,
-  );
+router.post(
+  reviewCtrl.setUserCreateReview,
+  reviewCtrl.createReview,
+);
 
-router.use(enrollController.restrictTo('member', 'provider'));
-router.route('/update/:id')
+router.route('/:id', reviewCtrl.checkOwner)
   .patch(
-    reviewController.checkReviewOwner,
-    reviewController.restrictUpdateReviewFields,
-    reviewController.updateReview,
-  );
-router.route('/delete/:id')
+    reviewCtrl.restrictUpdateReviewFields,
+    reviewCtrl.updateReview,
+  )
   .delete(
-    reviewController.checkReviewOwner,
-    reviewController.deleteReview,
+    reviewCtrl.deleteReview,
   );
 
 // router.use(authController.restrictTo('admin'));
-// router.route('/:id').get(reviewController.getReview);
-// router.route('/admin/create').post(reviewController.createReview);
-// router.route('/admin/update/:id').patch(reviewController.updateReview);
-// router.route('/admin/delete/:id').delete(reviewController.deleteReview);
+// router.route('/:id').get(reviewCtrl.getReview);
+// router.route('/admin/create').post(reviewCtrl.createReview);
+// router.route('/admin/update/:id').patch(reviewCtrl.updateReview);
+// router.route('/admin/delete/:id').delete(reviewCtrl.deleteReview);
 
 module.exports = router;
