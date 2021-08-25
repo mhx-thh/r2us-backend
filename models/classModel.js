@@ -7,7 +7,6 @@ const AppError = require('../utils/appError');
 const convVie = require('../utils/convVie');
 const reviewModel = require('./reviewModel');
 const resourceModel = require('./resourceModel');
-const courseModel = require('./courseModel');
 const enrollModel = require('./enrollModel');
 const instructorModel = require('./instructorModel');
 
@@ -19,8 +18,15 @@ const classSchema = new mongoose.Schema({
     trim: true,
     default: '',
   },
+  classNameTextSearch: {
+    type: String,
+    select: false,
+  },
 
   description: {
+    type: String,
+  },
+  descriptionTextSearch: {
     type: String,
     select: false,
   },
@@ -67,7 +73,7 @@ classSchema.index({
   academicId: 1,
 }, { unique: true });
 classSchema.index({ slug: 1 });
-classSchema.index({ description: 'text' });
+classSchema.index({ classNameTextSearch: 'text', descriptionTextSearch: 'text' });
 
 classSchema.plugin(uniqueValidator, {
   message: 'Error, {VALUE} is already taken',
@@ -82,7 +88,8 @@ classSchema.pre('save', async function (next) {
     return next(new AppError('Intructor is not master of course', StatusCodes.BAD_REQUEST));
   }
   // make it bester
-  this.description = convVie(this.className).toLowerCase();
+  this.descriptionTextSearch = convVie(this.description).toLowerCase();
+  this.classNameTextSearch = convVie(this.className).toLowerCase();
   this.slug = slugify(convVie(this.className), { lower: true });
   this.nStudents = 1;
   return next();
@@ -121,14 +128,16 @@ classSchema.pre(/^find/, function (next) {
 
 classSchema.pre(/findOneAndUpdate|updateOne|update/, async function (next) {
   const docUpdate = this.getUpdate();
-  if (!docUpdate || !docUpdate.className) return next();
-  const course = await courseModel.findById(this.courseId).then(
-    (courseFound) => {
-      if (!courseFound) return next(new AppError('Course not found', StatusCodes.NOT_FOUND));
-      return courseFound.toJSON();
-    },
-  );
-  this.findOneAndUpdate({}, { description: convVie(course.courseName).toLowercase() });
+  if (!docUpdate) return next();
+  const updateDocs = {};
+  if (docUpdate.className) {
+    updateDocs.classNameTextSearch = convVie(docUpdate.className).toLowerCase();
+  }
+  if (docUpdate.description) {
+    updateDocs.descriptionTextSearch = convVie(docUpdate.description).toLowerCase();
+  }
+  // update
+  this.findOneAndUpdate({}, updateDocs);
   return next();
 });
 

@@ -21,7 +21,7 @@ router.route('/create')
   );
 
 // Provider can update class
-router.route('/update/:id')
+router.route('/:id')
   .patch(
     enrollController.protect,
     enrollController.restrictTo('provider'),
