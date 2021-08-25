@@ -1,15 +1,17 @@
 const express = require('express');
 const reviewController = require('../../controller/reviewCtrl');
+const classCtrl = require('../../controller/classCtrl');
 const enrollController = require('../../controller/enrollCtrl');
 const authController = require('../../controller/authCtrl');
 
 const router = express.Router();
 
-router.get('/', reviewController.getAllReviews);
+router.get('/', classCtrl.convertQueryToClassId, reviewController.getAllReviews);
 router.get('/new-reviews', reviewController.getNewReviews, reviewController.getAllReviews);
 router.get('/me',
   authController.protect,
   enrollController.getMe,
+  classCtrl.convertQueryToClassId,
   reviewController.getAllReviews);
 router.get('/:slug', reviewController.getReviewBySlug);
 

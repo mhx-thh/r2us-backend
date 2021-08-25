@@ -1,16 +1,18 @@
 const express = require('express');
 const resourceController = require('../../controller/resourceCtrl');
+const classCtrl = require('../../controller/classCtrl');
 const authController = require('../../controller/authCtrl');
 const enrollController = require('../../controller/enrollCtrl');
 
 const router = express.Router();
 
-router.get('/', resourceController.getAllResources);
+router.get('/', classCtrl.convertQueryToClassId, resourceController.getAllResources);
 router.get('/new-resources', resourceController.getNewResources, resourceController.getAllResources);
 router.route('/me')
   .get(
     authController.protect,
     enrollController.getMe,
+    classCtrl.convertQueryToClassId,
     resourceController.getAllResources,
   );
 
