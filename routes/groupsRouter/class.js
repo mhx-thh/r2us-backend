@@ -21,12 +21,15 @@ router.route('/create')
   );
 
 // Provider can update class
-router.route('/:id')
+router.route('/:id',
+  enrollController.protect,
+  enrollController.restrictTo('provider'))
   .patch(
-    enrollController.protect,
-    enrollController.restrictTo('provider'),
     classController.restrictUpdateClassFields,
     classController.updateClass,
+  )
+  .delete(
+    classController.deleteClass,
   );
 
 // Most secure router
