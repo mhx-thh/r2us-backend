@@ -24,8 +24,6 @@ const resourceSchema = new mongoose.Schema({
 
   resourceLink: {
     type: String,
-    unique: true,
-    default: '',
   },
 
   resourceDescription: {
@@ -109,10 +107,10 @@ resourceSchema.pre(/findOneAndUpdate|updateOne|update/, function (next) {
   // return if not update search
   if (!docUpdate) return next();
   const updateDocs = {};
-  if (docUpdate.reviewTitle) {
+  if (docUpdate.resourceDescription) {
     updateDocs.resourceDescriptionTextSearch = convVie(docUpdate.resourceDescription).toLowerCase();
   }
-  if (docUpdate.review) {
+  if (docUpdate.resourceName) {
     updateDocs.resourceNameTextSearch = convVie(docUpdate.resourceName).toLowerCase();
   }
   // update

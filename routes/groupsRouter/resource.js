@@ -21,10 +21,9 @@ router.get('/:id', resourceCtrl.getResource);
 
 router.use(authController.protect);
 router
-  .post(
+  .post('/',
     resourceCtrl.setUserCreateResource,
-    resourceCtrl.createResource,
-  );
+    resourceCtrl.createResource);
 
 router.route('/:id', resourceCtrl.checkOwner)
   .patch(

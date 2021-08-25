@@ -18,10 +18,9 @@ router.get('/me',
 router.get('/:id', reviewCtrl.getReview);
 
 router.use(authController.protect);
-router.post(
+router.post('/',
   reviewCtrl.setUserCreateReview,
-  reviewCtrl.createReview,
-);
+  reviewCtrl.createReview);
 
 router.route('/:id', reviewCtrl.checkOwner)
   .patch(
