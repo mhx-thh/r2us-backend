@@ -88,7 +88,7 @@ classSchema.pre('save', async function (next) {
     return next(new AppError('Intructor is not master of course', StatusCodes.BAD_REQUEST));
   }
   // make it bester
-  this.descriptionTextSearch = convVie(this.description).toLowerCase();
+  if (this.description) this.descriptionTextSearch = convVie(this.description).toLowerCase();
   this.classNameTextSearch = convVie(this.className).toLowerCase();
   this.slug = slugify(convVie(this.className), { lower: true });
   this.nStudents = 1;
