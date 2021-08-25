@@ -7,6 +7,7 @@ const factory = require('../utils/handlerFactory');
 
 exports.getAllResources = factory.getAll(Resource);
 exports.getResourceBySlug = factory.getOne(Resource, { query: 'slug' });
+exports.getResource = factory.getOne(Resource);
 exports.createResource = factory.createOne(Resource);
 exports.updateResource = factory.updateOne(Resource);
 exports.deleteResource = factory.deleteOne(Resource);
@@ -15,15 +16,6 @@ exports.getNewResources = (req, res, next) => {
   req.query.__limit = '4';
   req.query.__sort = '-createdAt,-updatedAt';
   next();
-};
-
-exports.searchByDescription = async function (req, res, next) {
-  const searchField = req.query.description;
-  const resourceExists = await Resource.find({ resourceDescription: { $regex: searchField, $options: '$i' } });
-  const document = resourceExists;
-  if (!document) return next(new AppError('No document found', StatusCodes.NOT_FOUND));
-
-  return sendResponse(document, StatusCodes.OK, res);
 };
 
 exports.acceptResource = async function (req, res, next) {
@@ -35,7 +27,7 @@ exports.acceptResource = async function (req, res, next) {
 };
 
 exports.restrictUpdateResourceFields = (req, res, next) => {
-  const allowed = ['resourceName', 'resourceDescription'];
+  const allowed = ['resourceLink', 'resourceName', 'resourceDescription', 'resourceType'];
   Object.keys(req.body).forEach((element) => {
     if (!allowed.includes(element)) {
       delete req.body[element];
@@ -44,13 +36,23 @@ exports.restrictUpdateResourceFields = (req, res, next) => {
   next();
 };
 
-exports.checkResourceOwner = catchAsync(async (req, res, next) => {
+exports.resourceToClass = catchAsync(async (req, res, next) => {
+  const review = await Resource.findById(req.params.id);
+  if (!review) return next(new AppError('Resource not found', StatusCodes.NOT_FOUND));
+  req.class = review.classId;
+  return next();
+});
+
+exports.checkOwner = catchAsync(async (req, res, next) => {
+  if (req.user.role === 'admin') return next();
   const resource = await Resource.findById(req.params.id);
   if (!resource) return next(new AppError('Resource not found', StatusCodes.NOT_FOUND));
-  if (req.user.id !== resource.userId) {
+  if (resource.userId !== req.user.id) {
     return next(
-      new AppError('You do not have permission to perform this action',
-        StatusCodes.FORBIDDEN),
+      new AppError(
+        'You do not have permission to perform this action.',
+        StatusCodes.FORBIDDEN,
+      ),
     );
   }
   return next();

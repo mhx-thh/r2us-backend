@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
-const slugify = require('slugify');
 const uniqueValidator = require('mongoose-unique-validator');
 const idValidator = require('mongoose-id-validator');
-// const { StatusCodes } = require('http-status-codes');
 const convVie = require('../utils/convVie');
-// const AppError = require('../utils/appError');
 const enrollModel = require('./enrollModel');
 
 const resourceSchema = new mongoose.Schema({
@@ -20,6 +17,10 @@ const resourceSchema = new mongoose.Schema({
     minlength: [10, 'This resource should have a name with 10chars or more'],
     required: [true, 'Resource should have a name'],
   },
+  resourceNameTextSearch: {
+    type: String,
+    select: false,
+  },
 
   resourceLink: {
     type: String,
@@ -31,13 +32,10 @@ const resourceSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
-
-  textSearch: {
+  resourceDescriptionTextSearch: {
     type: String,
     select: false,
   },
-
-  slug: String,
 
   classId: {
     type: mongoose.Schema.ObjectId,
@@ -66,7 +64,7 @@ const resourceSchema = new mongoose.Schema({
   toObject: { virtuals: true },
 });
 
-resourceSchema.index({ textSearch: 'text' });
+resourceSchema.index({ resourceNameTextSearch: 'text', resourceDescriptionTextSearch: 'text' });
 
 resourceSchema.pre(/^find/, function (next) {
   this.populate({
@@ -85,8 +83,8 @@ resourceSchema.plugin(uniqueValidator, {
 
 resourceSchema.plugin(idValidator);
 resourceSchema.pre('save', async function (next) {
-  this.textSearch = convVie(this.resourceName).toLowerCase();
-  this.slug = slugify(this.textSearch, { lower: true });
+  this.resourceNameTextSearch = convVie(this.resourceName).toLowerCase();
+  this.resourceDescriptionTextSearch = convVie(this.resourceDescription).toLowerCase();
   next();
 });
 
@@ -108,8 +106,17 @@ resourceSchema.post('save', async function () {
 
 resourceSchema.pre(/findOneAndUpdate|updateOne|update/, function (next) {
   const docUpdate = this.getUpdate();
-  if (!docUpdate || !docUpdate.resourceName) return next();
-  this.findOneAndUpdate({}, { textSearch: convVie(docUpdate.resourceName).toLowerCase() });
+  // return if not update search
+  if (!docUpdate) return next();
+  const updateDocs = {};
+  if (docUpdate.reviewTitle) {
+    updateDocs.resourceDescriptionTextSearch = convVie(docUpdate.resourceDescription).toLowerCase();
+  }
+  if (docUpdate.review) {
+    updateDocs.resourceNameTextSearch = convVie(docUpdate.resourceName).toLowerCase();
+  }
+  // update
+  this.findOneAndUpdate({}, updateDocs);
   return next();
 });
 

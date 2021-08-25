@@ -82,12 +82,6 @@ reviewSchema.pre(/^find/, function (next) {
   }).populate({
     path: 'classId',
     select: '_id className academicId',
-  }).populate({
-    path: 'courseId',
-    select: '_id courseName facultyId',
-  }).populate({
-    path: 'instructorId',
-    select: '_id instructorName',
   });
   next();
 });

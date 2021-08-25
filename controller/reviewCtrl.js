@@ -23,7 +23,7 @@ exports.updateReview = factory.updateOne(Review);
 exports.deleteReview = factory.deleteOne(Review);
 
 exports.restrictUpdateReviewFields = (req, res, next) => {
-  const allowed = ['reviewTitle', 'review'];
+  const allowed = ['reviewTitle', 'review', 'reviewType'];
   Object.keys(req.body).forEach((element) => {
     if (!allowed.includes(element)) {
       delete req.body[element];
