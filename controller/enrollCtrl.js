@@ -22,6 +22,11 @@ exports.setUserId = (request, response, next) => {
   next();
 };
 
+exports.setMember = (request, response, next) => {
+  request.body.role = 'member';
+  next();
+};
+
 exports.setProvider = (request, response, next) => {
   request.body.role = 'provider';
   next();
