@@ -7,4 +7,5 @@ exports.convVieSearch = (req, _, next) => {
       req.query[element] = convVie(req.query[element]).toLowerCase();
     }
   });
+  next();
 };
