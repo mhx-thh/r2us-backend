@@ -2,12 +2,13 @@ const express = require('express');
 const authController = require('../../controller/authCtrl');
 const classController = require('../../controller/classCtrl');
 const enrollController = require('../../controller/enrollCtrl');
+const { convVieSearch } = require('../../controller/middleCtrl');
 
 const router = express.Router();
 
 router.route('/new-groups').get(classController.getNewClasses, classController.getAllClasses);
 // router.get('/search', classController.searchByDescription, classController.getAllClasses);
-router.get('/', classController.getAllClasses);
+router.get('/', convVieSearch, classController.getAllClasses);
 router.get('/:slug', classController.getClassBySlug);
 
 // router.get('/search', classController.getNewClasses, classController.getAllClasses);

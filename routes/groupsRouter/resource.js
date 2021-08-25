@@ -3,16 +3,18 @@ const resourceCtrl = require('../../controller/resourceCtrl');
 const classCtrl = require('../../controller/classCtrl');
 const authController = require('../../controller/authCtrl');
 const enrollController = require('../../controller/enrollCtrl');
+const { convVieSearch } = require('../../controller/middleCtrl');
 
 const router = express.Router();
 
-router.get('/', classCtrl.convertQueryToClassId, resourceCtrl.getAllResources);
+router.get('/', classCtrl.convertQueryToClassId, convVieSearch, resourceCtrl.getAllResources);
 router.get('/new-resources', resourceCtrl.getNewResources, resourceCtrl.getAllResources);
 router.route('/me')
   .get(
     authController.protect,
     enrollController.getMe,
     classCtrl.convertQueryToClassId,
+    convVieSearch,
     resourceCtrl.getAllResources,
   );
 router.get('/:id', resourceCtrl.getResource);
