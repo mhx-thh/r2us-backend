@@ -46,6 +46,9 @@ exports.convertQueryToClassId = catchAsync(async (req, res, next) => {
   const allowed = new RegExp('(courseId|instructorId|academicId)', 'g');
   const queryClass = {};
   Object.keys(req.query).forEach((element) => {
+    // have classId query
+    if (element.indexOf('classId') !== -1) next();
+    // import query
     if (element.search(allowed) === 0) {
       queryClass[element] = req.query[element];
     }
