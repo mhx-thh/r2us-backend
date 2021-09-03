@@ -1,9 +1,11 @@
 const express = require('express');
 const authController = require('../../controller/authCtrl');
 const enrollController = require('../../controller/enrollCtrl');
-// const userController = require('../../controller/userCtrl');
+const { convVieSearch } = require('../../controller/middleCtrl');
 
 const router = express.Router();
+
+router.get('/', convVieSearch, enrollController.getAllEnrollment);
 
 router.get('/me', // Get my enrollment and role
   authController.protect,
