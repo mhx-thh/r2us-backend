@@ -132,12 +132,13 @@ classSchema.pre(/findOneAndUpdate|updateOne|update/, async function (next) {
   const updateDocs = {};
   if (docUpdate.className) {
     updateDocs.classNameTextSearch = convVie(docUpdate.className).toLowerCase();
+    updateDocs.slug = slugify(convVie(docUpdate.className), { lower: true });
   }
   if (docUpdate.description) {
     updateDocs.descriptionTextSearch = convVie(docUpdate.description).toLowerCase();
   }
   // update
-  this.findOneAndUpdate({}, updateDocs);
+  this.findOneAndUpdate({}, updateDocs, { runValidators: true, context: 'query' });
   return next();
 });
 
