@@ -39,7 +39,7 @@ classRoleSchema.pre(/^find/, function (next) {
     select: '_id studentCardNumber givenName familyName email dateOfBirth photo',
   }).populate({
     path: 'classId',
-    select: '_id className courseId instructorId academicId',
+    select: '_id className courseId instructorId academicId slug',
   });
   next();
 });
