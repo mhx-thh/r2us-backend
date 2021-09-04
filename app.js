@@ -14,6 +14,7 @@ const userRouter = require('./routes/userRouter');
 const authRouter = require('./routes/authRouter');
 const groupsRouter = require('./routes/groupsRouter');
 const academicRouter = require('./routes/academicRouter');
+const blogRouter = require('./routes/blogRouter');
 // TOTO: insert router
 const docsRouter = require('./routes/docsRouter');
 
@@ -102,6 +103,7 @@ app.use('/api/v1/user', userRouter);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/groups', groupsRouter);
 app.use('/api/v1/academic', academicRouter);
+app.use('/api/v1/blog', blogRouter);
 // TODO: use route here
 app.use('/api/v1/api-docs', docsRouter);
 
