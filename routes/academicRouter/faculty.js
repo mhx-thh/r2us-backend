@@ -1,5 +1,5 @@
 const express = require('express');
-// const authController = require('../../controller/authCtrl');
+const authController = require('../../controller/authCtrl');
 const facultyController = require('../../controller/facultyCtrl');
 
 const router = express.Router();
@@ -7,8 +7,8 @@ const router = express.Router();
 router.get('/', facultyController.getAllFaculty);
 router.get('/:id', facultyController.getFaculty);
 
-// router.use(authController.protect);
-// router.use(authController.restrictTo('admin'));
+router.use(authController.protect);
+router.use(authController.restrictTo('admin'));
 
 router.route('/create').post(facultyController.createFaculty);
 router.route('/update/:id').patch(facultyController.updateFaculty);
