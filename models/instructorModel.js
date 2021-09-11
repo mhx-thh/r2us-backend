@@ -34,16 +34,13 @@ instructorSchema.plugin(uniqueValidator, {
 
 instructorSchema.plugin(idValidator);
 
-// instructorSchema.pre(/^find/, async function (next) {
-//   this.populate({
-//     path: 'courseId',
-//     select: 'courseName _id',
-//   }).populate({
-//     path: 'classId',
-//     select: 'className _id, academicId',
-//   });
-//   next();
-// });
+instructorSchema.pre(/^find/, async function (next) {
+  this.populate({
+    path: 'courseId',
+    select: 'courseName _id',
+  });
+  next();
+});
 
 instructorSchema.pre(/findOneAndUpdate|updateOne|update/, async function (next) {
   const docUpdate = this.getUpdate();
