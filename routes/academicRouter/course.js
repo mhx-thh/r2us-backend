@@ -5,6 +5,7 @@ const courseController = require('../../controller/courseCtrl');
 const router = express.Router();
 
 router.get('/', courseController.getAllCourses);
+router.get('/:id', courseController.getCourse);
 // router.get('/:slug', courseController.getCourseBySlug);
 
 // router.use(authController.protect);
