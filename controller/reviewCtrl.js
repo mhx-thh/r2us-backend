@@ -24,6 +24,7 @@ exports.deleteReview = factory.deleteOne(Review);
 
 exports.restrictUpdateReviewFields = (req, res, next) => {
   const allowed = ['reviewTitle', 'review', 'reviewType'];
+  if (req.userEnroll !== undefined && req.userEnroll.role === 'provider') allowed.append('status');
   Object.keys(req.body).forEach((element) => {
     if (!allowed.includes(element)) {
       delete req.body[element];
