@@ -23,6 +23,7 @@ router.route('/create')
 
 // Provider can update class
 router.route('/:id',
+  classController.setClassId,
   enrollController.protect,
   enrollController.restrictTo('provider'))
   .patch(

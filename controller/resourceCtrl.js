@@ -45,9 +45,10 @@ exports.resourceToClass = catchAsync(async (req, res, next) => {
 });
 
 exports.checkOwner = catchAsync(async (req, res, next) => {
-  if (req.user.role === 'admin') return next();
   const resource = await Resource.findById(req.params.id);
   if (!resource) return next(new AppError('Resource not found', StatusCodes.NOT_FOUND));
+  req.class = { id: resource.classId._id };
+  if (req.user.role === 'admin') return next();
   if (resource.userId !== req.user.id) {
     return next(
       new AppError(

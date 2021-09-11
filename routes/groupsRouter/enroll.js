@@ -20,4 +20,16 @@ router.post('/', // join class with member role
   enrollController.setMember,
   enrollController.createEnrollment);
 
+router.route('/:id',
+  enrollController.setClassId,
+  enrollController.protect,
+  enrollController.restrictTo('provider'))
+  .patch(
+    enrollController.restrictUpdateEnrollFields,
+    enrollController.updateEnrollment,
+  )
+  .delete(
+    enrollController.deleteEnrollment,
+  );
+
 module.exports = router;

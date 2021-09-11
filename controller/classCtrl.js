@@ -32,6 +32,11 @@ exports.setUserCreateClass = (request, response, next) => {
   return next();
 };
 
+exports.setClassId = (request, response, next) => {
+  request.class = { id: request.param.id };
+  return next();
+};
+
 exports.restrictUpdateClassFields = (req, res, next) => {
   const allowed = ['className', 'description'];
   Object.keys(req.body).forEach((element) => {

@@ -23,7 +23,9 @@ router
     resourceCtrl.setUserCreateResource,
     resourceCtrl.createResource);
 
-router.route('/:id', resourceCtrl.checkOwner)
+router.route('/:id',
+  resourceCtrl.checkOwner,
+  enrollController.protect)
   .patch(
     resourceCtrl.restrictUpdateResourceFields,
     resourceCtrl.updateResource,

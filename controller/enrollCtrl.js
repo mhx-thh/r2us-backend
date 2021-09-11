@@ -32,9 +32,16 @@ exports.setProvider = (request, response, next) => {
   next();
 };
 
+exports.setClassId = catchAsync(async (req, res, next) => {
+  const enroll = await Enroll.findById(req.params.id);
+  if (!enroll) return next(new AppError('Enroll not found', StatusCodes.NOT_FOUND));
+  req.class = { id: enroll.classId._id };
+  return next();
+});
+
 exports.protect = catchAsync(async (req, res, next) => {
   const isEnrolled = await Enroll.findOne(
-    { userId: req.user.id, classId: req.params.id },
+    { userId: req.user.id, classId: req.class.id },
   );
   if (!isEnrolled) {
     return next(new AppError('You are not enrolled', StatusCodes.UNAUTHORIZED));
@@ -54,6 +61,17 @@ exports.restrictTo = (...roles) => (req, res, next) => {
     );
   }
   return next();
+};
+
+exports.restrictUpdateEnrollFields = (req, res, next) => {
+  const allowed = [];
+  if (req.userEnroll !== undefined && req.userEnroll.role === 'provider') allowed.append('role');
+  Object.keys(req.body).forEach((element) => {
+    if (!allowed.includes(element)) {
+      delete req.body[element];
+    }
+  });
+  next();
 };
 
 exports.advanceToProvider = catchAsync(async (req, res, next) => {
