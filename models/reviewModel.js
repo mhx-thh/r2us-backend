@@ -36,6 +36,12 @@ const reviewSchema = new mongoose.Schema({
     required: [true, 'Review must belong to a user'],
   },
 
+  status: {
+    type: String,
+    enum: ['pending', 'accepted'],
+    default: 'pending',
+  },
+
   classId: {
     type: mongoose.Schema.ObjectId,
     ref: 'Class',
