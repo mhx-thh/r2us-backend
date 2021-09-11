@@ -5,7 +5,6 @@ const idValidator = require('mongoose-id-validator');
 const convVie = require('../utils/convVie');
 const classModel = require('./classModel');
 const instructorModel = require('./instructorModel');
-const reviewModel = require('./reviewModel');
 
 const courseSchema = new mongoose.Schema({
   courseName: {
@@ -64,7 +63,6 @@ courseSchema.post(
   { document: true, query: true },
   async (result) => {
     await classModel.deleteMany({ courseId: result._id });
-    await reviewModel.deleteMany({ courseId: result._id });
     await instructorModel.updateMany({}, { $pull: { courseId: result._id } });
   },
 );

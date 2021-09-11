@@ -4,7 +4,6 @@ const uniqueValidator = require('mongoose-unique-validator');
 const idValidator = require('mongoose-id-validator');
 const AppError = require('../utils/appError');
 const classModel = require('./classModel');
-const reviewModel = require('./reviewModel');
 
 const instructorSchema = new mongoose.Schema({
   instructorName: {
@@ -60,7 +59,6 @@ instructorSchema.post(
   { document: true, query: true },
   async (result) => {
     await classModel.deleteMany({ instructorId: result._id });
-    await reviewModel.deleteMany({ instructorId: result._id });
   },
 );
 
