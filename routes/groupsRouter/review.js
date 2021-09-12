@@ -22,9 +22,11 @@ router.post('/',
   reviewCtrl.setUserCreateReview,
   reviewCtrl.createReview);
 
-router.route('/:id',
-  reviewCtrl.checkOwner,
-  enrollController.protect)
+router.route('/:id')
+  .all(
+    reviewCtrl.checkOwner,
+    enrollController.protect,
+  )
   .patch(
     reviewCtrl.restrictUpdateReviewFields,
     reviewCtrl.updateReview,
