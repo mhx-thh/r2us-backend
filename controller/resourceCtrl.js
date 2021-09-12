@@ -28,7 +28,7 @@ exports.acceptResource = async function (req, res, next) {
 
 exports.restrictUpdateResourceFields = (req, res, next) => {
   const allowed = ['resourceLink', 'resourceName', 'resourceDescription', 'resourceType'];
-  if (req.userEnroll !== undefined && req.userEnroll.role === 'provider') allowed.append('status');
+  if (req.userEnroll !== undefined && req.userEnroll.role === 'provider') allowed.push('status');
   Object.keys(req.body).forEach((element) => {
     if (!allowed.includes(element)) {
       delete req.body[element];
