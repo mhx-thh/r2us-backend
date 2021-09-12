@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const uniqueValidator = require('mongoose-unique-validator');
@@ -84,9 +85,9 @@ classSchema.plugin(idValidator);
 classSchema.pre('save', async function (next) {
   // check intructor is master of course
   const instructor = await instructorModel.findById(this.instructorId);
-  if (!instructor.courseId.includes(this.courseId)) {
-    return next(new AppError('Intructor is not master of course', StatusCodes.BAD_REQUEST));
-  }
+  instructor.courseId.forEach(function (e) {
+    if (e._id === this.courseId) return next(new AppError('Intructor is not master of course', StatusCodes.BAD_REQUEST));
+  });
   // make it bester
   if (this.description) this.descriptionTextSearch = convVie(this.description).toLowerCase();
   this.classNameTextSearch = convVie(this.className).toLowerCase();

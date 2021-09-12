@@ -16,7 +16,7 @@ router.get('/:slug', classController.getClassBySlug);
 router.use(authController.protect);
 router.route('/create')
   .post(
-    authController.restrictTo('user'),
+    authController.restrictTo('user', 'admin'),
     classController.setUserCreateClass,
     classController.createClass,
   );
