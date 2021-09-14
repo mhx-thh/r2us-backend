@@ -3,7 +3,7 @@ const { StatusCodes } = require('http-status-codes');
 const catchAsync = require('./catchAsync');
 const AppError = require('./appError');
 
-const queryToMongo = require('./queryToMongo')({});
+const { queryToMongo } = require('./queryToMongo');
 const sendResponse = require('./sendResponse');
 
 exports.createOne = (Model) => catchAsync(async (request, response, next) => {
@@ -14,11 +14,10 @@ exports.createOne = (Model) => catchAsync(async (request, response, next) => {
 exports.getAll = (Model) => catchAsync(async (request, response, next) => {
   const {
     skip, limit, sort, filter,
-  } = queryToMongo(request.query);
+  } = queryToMongo({})(request.query);
   const [total, result] = await Promise.all([
     Model.countDocuments(filter),
-    Model.find(filter).sort(sort).skip(skip)
-      .limit(limit),
+    Model.find(filter).sort(sort).skip(skip).limit(limit),
   ]);
 
   return sendResponse({ total, returned: result.length, result }, StatusCodes.OK, response);

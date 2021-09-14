@@ -4,6 +4,13 @@ const factory = require('../utils/handlerFactory');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
+exports.getAllReviews = factory.getAll(Review);
+exports.getReview = factory.getOne(Review);
+exports.getReviewBySlug = factory.getOne(Review, { query: 'slug' });
+exports.createReview = factory.createOne(Review);
+exports.updateReview = factory.updateOne(Review);
+exports.deleteReview = factory.deleteOne(Review);
+
 exports.getNewReviews = (req, res, next) => {
   req.query.__limit = '4';
   req.query.__sort = '-createdAt, -updateAt';
@@ -15,16 +22,33 @@ exports.myReview = (req, res, next) => {
   next();
 };
 
-exports.getAllReviews = factory.getAll(Review);
-exports.getReview = factory.getOne(Review);
-exports.getReviewBySlug = factory.getOne(Review, { query: 'slug' });
-exports.createReview = factory.createOne(Review);
-exports.updateReview = factory.updateOne(Review);
-exports.deleteReview = factory.deleteOne(Review);
+// make user create to body form
+exports.setUserCreateReview = (request, response, next) => {
+  request.body.userId = request.user.id;
+  return next();
+};
 
+// can delete = can edit
+exports.canEditAndDelete = (req, res, next) => {
+  req.editWith = 'full';
+  if (req.user.role === 'admin') return next();
+  if (req.userEnroll.role === 'provider') return next();
+  req.editWith = 'basic';
+  if (req.review.userId === req.user.id) return next();
+  return next(
+    new AppError(
+      'You do not have permission to perform this action.',
+      StatusCodes.FORBIDDEN,
+    ),
+  );
+};
+
+// check fields can edit with many permission
 exports.restrictUpdateReviewFields = (req, res, next) => {
+  // update with 'basic' permission
   const allowed = ['reviewTitle', 'review', 'reviewType'];
-  if (req.userEnroll !== undefined && req.userEnroll.role === 'provider') allowed.push('status');
+  // 'full' permission
+  if (req.editWith === 'full') allowed.push('status');
   Object.keys(req.body).forEach((element) => {
     if (!allowed.includes(element)) {
       delete req.body[element];
@@ -33,30 +57,11 @@ exports.restrictUpdateReviewFields = (req, res, next) => {
   next();
 };
 
-exports.reviewToClass = catchAsync(async (req, res, next) => {
+// convert review Id on url to Class Id on Request
+exports.reviewIdtoClassIdOnReq = catchAsync(async (req, res, next) => {
   const review = await Review.findById(req.params.id);
   if (!review) return next(new AppError('Review not found', StatusCodes.NOT_FOUND));
-  req.class = review.classId;
-  return next();
-});
-
-exports.checkOwner = catchAsync(async (req, res, next) => {
-  const review = await Review.findById(req.params.id);
-  if (!review) return next(new AppError('Review not found', StatusCodes.NOT_FOUND));
+  req.review = review;
   req.class = { id: review.classId._id };
-  if (req.user.role === 'admin') return next();
-  if (review.userId !== req.user.id) {
-    return next(
-      new AppError(
-        'You do not have permission to perform this action.',
-        StatusCodes.FORBIDDEN,
-      ),
-    );
-  }
   return next();
 });
-
-exports.setUserCreateReview = (request, response, next) => {
-  request.body.userId = request.user.id;
-  return next();
-};

@@ -82,7 +82,7 @@ const defaultDataTypeConverters = {
  * The factory function that we export: this will be used to construct one
  * or more query processor functions based on the options passed in.
  */
-module.exports = function qpm(opts) {
+exports.queryToMongo = function (opts) {
   if (!opts) opts = {};
 
   // user specified patterns take precedence, so add them before the default
@@ -261,17 +261,15 @@ module.exports = function qpm(opts) {
      */
     let limit = 0;
     let skip = 0;
-    let offset = 20;
+    let offset = 0;
     if (params.__limit) {
       limit = parseInt(params.__limit, 10);
     }
     if (params.__offset) {
       offset = parseInt(params.__offset, 10);
-      skip = offset;
     }
     if (params.__skip) {
-      offset = parseInt(params.__skip, 10);
-      skip = offset;
+      skip = parseInt(params.__skip, 10);
     }
 
     const sort = {};
@@ -294,13 +292,11 @@ module.exports = function qpm(opts) {
     });
 
     if (errors.length > 0) throw errors;
-
     return {
       filter,
       sort,
       limit,
-      offset,
-      skip,
+      skip: skip * offset,
     };
   };
 };

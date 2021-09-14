@@ -1,10 +1,8 @@
 const { StatusCodes } = require('http-status-codes');
 const Enroll = require('../models/enrollModel');
-const Class = require('../models/classModel');
 const factory = require('../utils/handlerFactory');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
-const sendResponse = require('../utils/sendResponse');
 
 exports.getAllEnrollment = factory.getAll(Enroll);
 exports.getEnrollment = factory.getOne(Enroll);
@@ -32,13 +30,15 @@ exports.setProvider = (request, response, next) => {
   next();
 };
 
-exports.setClassId = catchAsync(async (req, res, next) => {
+exports.enrollIdtoClassIdOnReq = catchAsync(async (req, res, next) => {
   const enroll = await Enroll.findById(req.params.id);
   if (!enroll) return next(new AppError('Enroll not found', StatusCodes.NOT_FOUND));
+  req.enroll = enroll;
   req.class = { id: enroll.classId._id };
   return next();
 });
 
+// checkout is enroll this class
 exports.protect = catchAsync(async (req, res, next) => {
   const isEnrolled = await Enroll.findOne(
     { userId: req.user.id, classId: req.class.id },
@@ -51,7 +51,6 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 exports.restrictTo = (...roles) => (req, res, next) => {
-  if (req.user.role === 'admin') return next();
   if (!roles.includes(req.userEnroll.role)) {
     return next(
       new AppError(
@@ -64,8 +63,10 @@ exports.restrictTo = (...roles) => (req, res, next) => {
 };
 
 exports.restrictUpdateEnrollFields = (req, res, next) => {
+  // update with 'basic' permission
   const allowed = [];
-  if (req.userEnroll !== undefined && req.userEnroll.role === 'provider') allowed.append('role');
+  // 'full' permission
+  if (req.editWith === 'full') allowed.append('role');
   Object.keys(req.body).forEach((element) => {
     if (!allowed.includes(element)) {
       delete req.body[element];
@@ -74,38 +75,16 @@ exports.restrictUpdateEnrollFields = (req, res, next) => {
   next();
 };
 
-exports.advanceToProvider = catchAsync(async (req, res, next) => {
-  const enrollment = await Enroll.findById(req.params.id);
-  await enrollment.advanceToProvider();
-  sendResponse({
-    message: 'You are a provider for this class now',
-  },
-  StatusCodes.OK,
-  res);
-});
-
-exports.checkPermission = catchAsync(async (req, res, next) => {
-  const enrollment = await Enroll.findOne({ id: req.params.id });
-  if (enrollment.role === 'member' || enrollment.role === 'provider') return next(new AppError('Already a member of this class', StatusCodes.NOT_MODIFIED));
-  return next();
-});
-
-exports.checkProvider = catchAsync(async (req, res, next) => {
-  const enrollment = await Enroll.findById(req.params.id);
-  if (!enrollment) return next(new AppError('You are not enrolled', StatusCodes.UNAUTHORIZED));
-  if (enrollment.role === 'provider') return next(new AppError('You are already a provider now', StatusCodes.NOT_MODIFIED));
-  return next();
-});
-
-exports.getSlug = catchAsync(async (req, res, next) => {
-  const slug = await Class.findOne({ slug: req.params.slug }, { select: 'slug' });
-  if (!slug) return next(new AppError('Class not found', StatusCodes.NOT_FOUND));
-  return next();
-});
-
-exports.setIdBySlug = catchAsync(async (req, res, next) => {
-  const slug = await Class.findOne({ slug: req.params.slug }, { select: 'id' });
-  if (!slug) return next(new AppError('Class not found', StatusCodes.NOT_FOUND));
-  req.body.classId = slug;
-  return next();
+exports.canEditAndDeleteEnroll = catchAsync(async (req, res, next) => {
+  req.editWith = 'full';
+  if (req.user.role === 'admin') return next();
+  if (req.userEnroll.role === 'provider') return next();
+  req.editWith = 'basic';
+  if (req.review.userId === req.user.id) return next();
+  return next(
+    new AppError(
+      'You do not have permission to perform this action.',
+      StatusCodes.FORBIDDEN,
+    ),
+  );
 });

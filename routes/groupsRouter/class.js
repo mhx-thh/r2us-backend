@@ -1,44 +1,34 @@
 const express = require('express');
-const authController = require('../../controller/authCtrl');
-const classController = require('../../controller/classCtrl');
-const enrollController = require('../../controller/enrollCtrl');
-const { convVieSearch } = require('../../controller/middleCtrl');
+const authCtrl = require('../../controller/authCtrl');
+const classCtrl = require('../../controller/classCtrl');
+const enrollCtrl = require('../../controller/enrollCtrl');
+const { convVieSearch, paging } = require('../../controller/middleCtrl');
 
 const router = express.Router();
 
-router.route('/new-groups').get(classController.getNewClasses, classController.getAllClasses);
-// router.get('/search', classController.searchByDescription, classController.getAllClasses);
-router.get('/', convVieSearch, classController.getAllClasses);
-router.get('/:slug', classController.getClassBySlug);
+router.route('/new-groups').get(classCtrl.getNewClasses, classCtrl.getAllClasses);
+router.get('/', convVieSearch, paging, classCtrl.getAllClasses);
+router.get('/:slug', classCtrl.getClassBySlug);
 
-// router.get('/search', classController.getNewClasses, classController.getAllClasses);
 // User can create class
-router.use(authController.protect);
+router.use(authCtrl.protect);
 router.route('/create')
   .post(
-    authController.restrictTo('user', 'admin'),
-    classController.setUserCreateClass,
-    classController.createClass,
+    classCtrl.setUserCreateClass,
+    classCtrl.createClass,
   );
 
 // Provider can update class
 router.route('/:id',
-  classController.setClassId,
-  enrollController.protect,
-  enrollController.restrictTo('provider'))
+  classCtrl.setClassId,
+  enrollCtrl.protect,
+  classCtrl.canEditAndDeleteClass)
   .patch(
-    classController.restrictUpdateClassFields,
-    classController.updateClass,
+    classCtrl.restrictUpdateClassFields,
+    classCtrl.updateClass,
   )
   .delete(
-    classController.deleteClass,
+    classCtrl.deleteClass,
   );
-
-// Most secure router
-// TODO i dont think so
-// router.use(authController.restrictTo('admin'));
-// router.route('/admin/create').post(classController.createClass);
-// router.route('/admin/update/:id').patch(classController.updateClass);
-// router.route('/admin/delete/:id').delete(classController.deleteClass);
 
 module.exports = router;
