@@ -53,6 +53,7 @@ exports.updateOne = (Model) => catchAsync(async (request, response, next) => {
   const updateOption = {
     new: true, // return the new Update document to client
     runValidators: true, // run the validator
+    context: 'query',
   };
 
   const document = await Model.findByIdAndUpdate(
