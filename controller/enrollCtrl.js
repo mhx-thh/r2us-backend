@@ -66,7 +66,7 @@ exports.restrictUpdateEnrollFields = (req, res, next) => {
   // update with 'basic' permission
   const allowed = [];
   // 'full' permission
-  if (req.editWith === 'full') allowed.append('role');
+  if (req.editWith === 'full') allowed.push('role');
   Object.keys(req.body).forEach((element) => {
     if (!allowed.includes(element)) {
       delete req.body[element];
