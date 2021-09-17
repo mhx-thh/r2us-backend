@@ -54,7 +54,7 @@ courseSchema.pre(/^find/, function (next) {
 courseSchema.pre(/findOneAndUpdate|updateOne|update/, function (next) {
   const docUpdate = this.getUpdate();
   if (!docUpdate || !docUpdate.courseName) return next();
-  this.findOneAndUpdate({}, { courseDescription: convVie(docUpdate.courseName).toLowercase() });
+  this.findOneAndUpdate({}, { courseDescription: convVie(docUpdate.courseName).toLowerCase() });
   return next();
 });
 

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const { StatusCodes } = require('http-status-codes');
+// const { StatusCodes } = require('http-status-codes');
 const uniqueValidator = require('mongoose-unique-validator');
 const idValidator = require('mongoose-id-validator');
-const AppError = require('../utils/appError');
+// const AppError = require('../utils/appError');
 const classModel = require('./classModel');
 
 const instructorSchema = new mongoose.Schema({
@@ -41,18 +41,18 @@ instructorSchema.pre(/^find/, async function (next) {
   next();
 });
 
-instructorSchema.pre(/findOneAndUpdate|updateOne|update/, async function (next) {
-  const docUpdate = this.getUpdate();
-  if (!docUpdate || !docUpdate.instructorName) return next();
-  const classExists = await classModel.findById(this.classId).then(
-    (courseFound) => {
-      if (!courseFound) return next(new AppError('Course not found', StatusCodes.NOT_FOUND));
-      return courseFound.toJSON();
-    },
-  );
-  this.findOneAndUpdate({}, { courseId: classExists.courseId, classId: classExists._id });
-  return next();
-});
+// instructorSchema.pre(/findOneAndUpdate|updateOne|update/, async function (next) {
+//   const docUpdate = this.getUpdate();
+//   if (!docUpdate || !docUpdate.instructorName) return next();
+//   const classExists = await classModel.findById(this.classId).then(
+//     (courseFound) => {
+//       if (!courseFound) return next(new AppError('Course not found', StatusCodes.NOT_FOUND));
+//       return courseFound.toJSON();
+//     },
+//   );
+//   this.findOneAndUpdate({}, { courseId: classExists.courseId, classId: classExists._id });
+//   return next();
+// });
 
 instructorSchema.post(
   /findOneAndDelete|findOneAndRemove|deleteOne|remove/,
