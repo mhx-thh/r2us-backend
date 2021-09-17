@@ -7,7 +7,7 @@ const sendResponse = require('../utils/sendResponse');
 
 const updateUserFunc = (opt = { type: 'common' }) => catchAsync(async (request, response, next) => {
   // FIX: Fix some thing here
-  const allowedFields = ['email', 'photo', 'dateOfbirth', 'school', 'major', 'bio'];
+  const allowedFields = ['givenName', 'familyName', 'studentCardNumber', 'email', 'photo', 'dateOfbirth', 'bio'];
   if (opt.type === 'admin') {
     allowedFields.push('role');
   }
