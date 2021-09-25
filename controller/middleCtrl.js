@@ -16,6 +16,7 @@ exports.getMe = async function (request, response, next) {
 };
 
 exports.paging = async function (request, response, next) {
+  request.query.__limit = '20';
   request.query.__offset = '20';
   return next();
 };
